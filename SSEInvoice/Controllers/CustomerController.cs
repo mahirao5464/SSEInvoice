@@ -11,25 +11,26 @@ using System.Threading.Tasks;
 namespace SSEInvoice.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class CustomerController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<CustomerController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public CustomerController(ILogger<CustomerController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Create()
         {
             return View();
         }
-        
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
