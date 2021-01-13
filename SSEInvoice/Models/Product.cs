@@ -25,7 +25,7 @@ namespace SSEInvoice.Models
         public Brand Brand { get; set; }
         [ForeignKey("Stocks")]
         public int? StocksId { get; set; }
-        public Stocks Stocks { get; set; }
+        public Stocks Stocks { get; set; } = new Stocks();
 
 
     }

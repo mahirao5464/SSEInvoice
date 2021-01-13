@@ -22,14 +22,25 @@ namespace SSEInvoice.Controllers
             _logger = logger;
             _db = db;
         }
-        public IActionResult Index() => View();
+        public IActionResult Index() => View(_db.Customers);
         public IActionResult Create() => View();
 
         [HttpPost]
         public IActionResult Create(Customer pCustomer)
         {
-            _db.Customers.Add(pCustomer);
-            _db.SaveChanges();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _db.Customers.Add(pCustomer);
+                    _db.SaveChanges();
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            
             return View(pCustomer);
         }
 

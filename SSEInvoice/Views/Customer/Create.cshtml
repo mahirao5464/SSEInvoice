@@ -87,7 +87,8 @@
                     <span asp-validation-for="ShipingAddress" class="text-danger"></span>
                     <div class="row" id="sAddresses">
                         @for (var i = 0; i < ShipingAddress?.Count(); i++)
-                        {
+                        { var j = i + 1;
+                            <strong>Address : @j </strong>
                             <div class="border p-1">
                                 <div class="form-group">
                                     <label asp-for="ShipingAddress[i].Line1"></label>

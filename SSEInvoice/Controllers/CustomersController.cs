@@ -46,7 +46,7 @@ namespace SSEInvoice.Controllers
 
         // GET: Customers/Create
         public IActionResult Create()
-        {
+        { 
             return View();
         }
 
@@ -59,6 +59,7 @@ namespace SSEInvoice.Controllers
         {
             if (ModelState.IsValid)
             {
+                customer.CreatedOn = DateTime.Now;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -67,14 +68,15 @@ namespace SSEInvoice.Controllers
         }
 
         // GET: Customers/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var customer =  _context.Customers.FindAsync(id);
+            var customer =await _context.Customers.Include(el=>el.PermanentAddress).Include(el=>el.ShipingAddress).Where(el=>el.CustomerId == id).FirstOrDefaultAsync();
+
             if (customer == null)
             {
                 return NotFound();
@@ -98,6 +100,7 @@ namespace SSEInvoice.Controllers
             {
                 try
                 {
+
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
@@ -140,8 +143,12 @@ namespace SSEInvoice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.Include(el => el.PermanentAddress).Include(el=>el.ShipingAddress).Where(el=>el.CustomerId==id).FirstOrDefaultAsync();
+            var permanentAddress = customer.PermanentAddress;
+            var shippingAddress = customer.ShipingAddress;
             _context.Customers.Remove(customer);
+            _context.Remove(permanentAddress);
+            _context.RemoveRange(shippingAddress);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

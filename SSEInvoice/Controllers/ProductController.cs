@@ -107,7 +107,7 @@ namespace SSEInvoice.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Product.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
