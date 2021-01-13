@@ -41,33 +41,39 @@
                     <h4>Parmanent Address :</h4>
                     <div class="border p-1">
                         <div class="form-group">
-                            <label asp-for="PermanentAddress.Line1" ></label>
-                            <input type="text" class="form-control"  asp-for="PermanentAddress.Line1" placeholder="1234 Main St">
+                            <label asp-for="PermanentAddress.Line1"></label>
+                            <input type="text" class="form-control" asp-for="PermanentAddress.Line1" placeholder="1234 Main St">
+                            <span asp-validation-for="PermanentAddress.Line1" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="PermanentAddress.Line2"></label>
-                            <input type="text" class="form-control" asp-for="PermanentAddress.Line2"  placeholder="Apartment, studio, or floor">
+                            <input type="text" class="form-control" asp-for="PermanentAddress.Line2" placeholder="Apartment, studio, or floor">
+                            <span asp-validation-for="PermanentAddress.Line2" class="text-danger"></span>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label asp-for="PermanentAddress.City"></label>
                                 <input type="text" asp-for="PermanentAddress.City" class="form-control">
+                                <span asp-validation-for="PermanentAddress.City" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
                                 <label asp-for="PermanentAddress.State"></label>
                                 <input type="text" asp-for="PermanentAddress.State" class="form-control">
+                                <span asp-validation-for="PermanentAddress.State" class="text-danger"></span>
                                 @*<select id="inputState" class="form-control">
-                <option selected>Choose...</option>
-                <option>...</option>
-            </select>*@
+            <option selected>Choose...</option>
+            <option>...</option>
+        </select>*@
                             </div>
                             <div class="form-group col-md-6">
                                 <label asp-for="PermanentAddress.StateCode"></label>
                                 <input type="text" asp-for="PermanentAddress.StateCode" class="form-control">
+                                <span asp-validation-for="PermanentAddress.StateCode" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-2">
                                 <label asp-for="PermanentAddress.PINCode"></label>
                                 <input type="text" class="form-control" asp-for="PermanentAddress.PINCode">
+                                <span asp-validation-for="PermanentAddress.PINCode" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -78,6 +84,7 @@
 
                     @{ var ShipingAddress = Model?.ShipingAddress;}
                     <h4>Shipping Address : </h4>
+                    <span asp-validation-for="ShipingAddress" class="text-danger"></span>
                     <div class="row" id="sAddresses">
                         @for (var i = 0; i < ShipingAddress?.Count(); i++)
                         {

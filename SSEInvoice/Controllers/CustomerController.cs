@@ -19,12 +19,20 @@ namespace SSEInvoice.Controllers
         {
             _logger = logger;
         }
-
+        public IActionResult Index() => View();
         public IActionResult Create() => View();
 
         [HttpPost]
         public IActionResult Create(Customer customer)
         {
+            if (ModelState.IsValid)
+            {
+                var x = customer.ShipingAddress;
+            }
+            else
+            {
+                var y = customer.ShipingAddress;
+            }
             return View(customer);
         }
 
