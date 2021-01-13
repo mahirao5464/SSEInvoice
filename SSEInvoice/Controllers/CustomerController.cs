@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SSEInvoice.Data;
 using SSEInvoice.Models;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,12 @@ namespace SSEInvoice.Controllers
     public class CustomerController : Controller
     {
         private readonly ILogger<CustomerController> _logger;
+        private ApplicationDbContext _db;
 
-        public CustomerController(ILogger<CustomerController> logger)
+        public CustomerController(ILogger<CustomerController> logger, ApplicationDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Create()
@@ -26,9 +29,11 @@ namespace SSEInvoice.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create()
+        public IActionResult Create(Customer pCustomer)
         {
-            return View();
+            _db.Customers.Add(pCustomer);
+            _db.SaveChanges();
+            return View(pCustomer);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

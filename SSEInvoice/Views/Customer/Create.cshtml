@@ -98,35 +98,38 @@
                 <label for="inputZip">Zip</label>
                 <input type="text" class="form-control" id="inputZip">
             </div>*@
+                    @for (int i = 0; i < Model?.ShipingAddress?.Count; i++)
+                    {
                 <div class="border p-1">
                     <div class="form-group">
-                        <label for="ShippingAddress[0]_Line1">Line1</label>
-                        <input type="text" class="form-control" placeholder="1234 Main St" data-val="true" data-val-required="The Line1 field is required." id="ShippingAddress[0]_Line1" name="ShippingAddress[0].Line1" value="">
+                        <label asp-for="ShipingAddress[i].Line1"></label>
+                        <input asp-for="ShipingAddress[i].Line1" type="text" class="form-control" placeholder="1234 Main St" >
                     </div>
                     <div class="form-group">
-                        <label for="ShippingAddress[0]_Line2">Line2</label>
-                        <input type="text" class="form-control" placeholder="Apartment, studio, or floor" id="ShippingAddress[0]_Line2" name="ShippingAddress[0].Line2" value="">
+                        <label asp-for="ShipingAddress[i].Line2"></label>
+                        <input type="text" asp-for="ShipingAddress[i].Line2" class="form-control" placeholder="Apartment, studio, or floor" >
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="ShippingAddress[0]_City">City</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The City field is required." id="ShippingAddress[0]_City" name="ShippingAddress[0].City" value="">
+                            <label asp-for="ShipingAddress[i].City"></label>
+                            <input type="text" asp-for="ShipingAddress[i].City" class="form-control" >
                         </div>
                         <div class="form-group col-md-4">
-                            <label for="ShippingAddress[0]_State">State</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The State field is required." id="ShippingAddress[0]_State" name="ShippingAddress[0].State" value="">
+                            <label asp-for="ShipingAddress[i].State"></label>
+                            <input asp-for="ShipingAddress[i].State" type="text" class="form-control" >
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="ShippingAddress[0]_StateCode">StateCode</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The StateCode field is required." id="ShippingAddress[0]_StateCode" name="ShippingAddress[0].StateCode" value="">
+                            <label asp-for="ShipingAddress[i].StateCode"></label>
+                            <input type="text" asp-for="ShipingAddress[i].StateCode" class="form-control">
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="PermanentAddress_PINCode">PINCode</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The PINCode field is required." id="PermanentAddress_PINCode" name="PermanentAddress.PINCode" value="">
+                            <label asp-for="ShipingAddress[i].PINCode"></label>
+                            <input type="text" asp-for="ShipingAddress[i].PINCode" class="form-control" >
                         </div>
                     </div>
 
                 </div>
+                    }
                     <div class="row justify-content-sm-center p-1">
                         <div class="col-sm-4 bg-primary text-center text-light " style="font-size: 30px;cursor: pointer;">
                             <strong> <span>&#43;</span></strong>
