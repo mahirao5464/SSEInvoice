@@ -20,15 +20,12 @@ namespace SSEInvoice.Controllers
             _logger = logger;
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
         [HttpPost]
-        public IActionResult Create()
+        public IActionResult Create(Customer customer)
         {
-            return View();
+            return View(customer);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

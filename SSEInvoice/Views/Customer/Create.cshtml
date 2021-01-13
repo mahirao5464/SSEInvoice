@@ -73,62 +73,77 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <h4>Shipping Address : </h4>
-                    @*<div class="form-group">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-        </div>
-        <div class="form-group">
-            <label for="inputAddress2">Address 2</label>
-            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="inputCity">City</label>
-                <input type="text" class="form-control" id="inputCity">
-            </div>
-            <div class="form-group col-md-4">
-                <label for="inputState">State</label>
-                <select id="inputState" class="form-control">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
-            </div>
-            <div class="form-group col-md-2">
-                <label for="inputZip">Zip</label>
-                <input type="text" class="form-control" id="inputZip">
-            </div>*@
-                <div class="border p-1">
-                    <div class="form-group">
-                        <label for="ShippingAddress[0]_Line1">Line1</label>
-                        <input type="text" class="form-control" placeholder="1234 Main St" data-val="true" data-val-required="The Line1 field is required." id="ShippingAddress[0]_Line1" name="ShippingAddress[0].Line1" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="ShippingAddress[0]_Line2">Line2</label>
-                        <input type="text" class="form-control" placeholder="Apartment, studio, or floor" id="ShippingAddress[0]_Line2" name="ShippingAddress[0].Line2" value="">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="ShippingAddress[0]_City">City</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The City field is required." id="ShippingAddress[0]_City" name="ShippingAddress[0].City" value="">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="ShippingAddress[0]_State">State</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The State field is required." id="ShippingAddress[0]_State" name="ShippingAddress[0].State" value="">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="ShippingAddress[0]_StateCode">StateCode</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The StateCode field is required." id="ShippingAddress[0]_StateCode" name="ShippingAddress[0].StateCode" value="">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="PermanentAddress_PINCode">PINCode</label>
-                            <input type="text" class="form-control" data-val="true" data-val-required="The PINCode field is required." id="PermanentAddress_PINCode" name="PermanentAddress.PINCode" value="">
-                        </div>
-                    </div>
 
+
+
+                    @{ var ShipingAddress = Model?.ShipingAddress;}
+                    <h4>Shipping Address : </h4>
+                    <div class="row" id="sAddresses">
+                        @for (var i = 0; i < ShipingAddress?.Count(); i++)
+                        {
+                            <div class="border p-1">
+                                <div class="form-group">
+                                    <label asp-for="ShipingAddress[i].Line1"></label>
+                                    <input type="text" class="form-control" asp-for="ShipingAddress[i].Line1" placeholder="1234 Main St">
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="ShipingAddress[i].Line2"></label>
+                                    <input type="text" class="form-control" asp-for="ShipingAddress[i].Line2" placeholder="Apartment, studio, or floor">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label asp-for="ShipingAddress[i].City"></label>
+                                        <input type="text" asp-for="ShipingAddress[i].City" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label asp-for="ShipingAddress[i].State"></label>
+                                        <input type="text" asp-for="ShipingAddress[i].State" class="form-control">
+                                        @*<select id="inputState" class="form-control">
+                                <option selected>Choose...</option>
+                                <option>...</option>
+                            </select>*@
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label asp-for="ShipingAddress[i].StateCode"></label>
+                                        <input type="text" asp-for="ShipingAddress[i].StateCode" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        <label asp-for="ShipingAddress[i].PINCode"></label>
+                                        <input type="text" class="form-control" asp-for="ShipingAddress[i].PINCode">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        }
+
+                        @*<div class="form-group">
+                <label for="inputAddress">Address</label>
+                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+            </div>
+            <div class="form-group">
+                <label for="inputAddress2">Address 2</label>
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="inputCity">
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>*@
+
+                    </div>
                     <div class="row justify-content-sm-center p-1">
-                        <div class="col-sm-4 bg-primary text-center text-light " style="font-size: 30px;cursor: pointer;">
+                        <div class="col-sm-4 bg-primary text-center text-light " onclick="AddAddress()" style="font-size: 30px;cursor: pointer;">
                             <strong> <span>&#43;</span></strong>
                         </div>
                     </div>
@@ -148,4 +163,46 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    var currentSize = "@Model?.ShipingAddress?.Count()";
+    function AddAddress() {
+        if (currentSize == "") currentSize = "0";
+        currentSize = Number(currentSize);
+        var innerHtml = `
+    <strong>Address : ${currentSize+1} </strong>
+     <div class="border p-1">
+                        <div class="form-group">
+                            <label for="ShipingAddress[${currentSize}]_Line1">Line1</label>
+                            <input type="text" class="form-control" placeholder="1234 Main St" data-val="true" data-val-required="The Line1 field is required." id="ShipingAddress[${currentSize}]_Line1" name="ShipingAddress[${currentSize}].Line1" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="ShipingAddress[${currentSize}]_Line2">Line2</label>
+                            <input type="text" class="form-control" placeholder="Apartment, studio, or floor" id="ShipingAddress[${currentSize}]_Line2" name="ShipingAddress[${currentSize}].Line2" value="">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="ShipingAddress[${currentSize}]_City">City</label>
+                                <input type="text" class="form-control" data-val="true" data-val-required="The City field is required." id="ShipingAddress[${currentSize}]_City" name="ShipingAddress[${currentSize}].City" value="">
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="ShipingAddress[${currentSize}]_State">State</label>
+                                <input type="text" class="form-control" data-val="true" data-val-required="The State field is required." id="ShipingAddress[${currentSize}]_State" name="ShipingAddress[${currentSize}].State" value="">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="ShipingAddress[${currentSize}]_StateCode">StateCode</label>
+                                <input type="text" class="form-control" data-val="true" data-val-required="The StateCode field is required." id="ShipingAddress[${currentSize}]_StateCode" name="ShipingAddress[${currentSize}].StateCode" value="">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="ShipingAddress[${currentSize}]_PINCode">PINCode</label>
+                                <input type="text" class="form-control" data-val="true" data-val-required="The PINCode field is required." id="ShipingAddress[${currentSize}]_PINCode" name="ShipingAddress[${currentSize}].PINCode" value="">
+                            </div>
+                        </div>
+
+                    </div><br>
+`;
+        document.getElementById("sAddresses").innerHTML += innerHtml;
+        currentSize++;
+    }
+</script>
+    
 }
