@@ -14,7 +14,8 @@ namespace SSEInvoice.Models
         public string  CustomerName { get; set; }
         [Required]
         public virtual Address PermanentAddress { get; set; }
-        public IList<Address> ShipingAddress { get; set; }
+        [Required(ErrorMessage = "Shipping Address is required")]
+        public virtual IList<Address> ShipingAddress { get; set; }
         [Required]
         public string  Phone { get; set; }//
         [Required]

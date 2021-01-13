@@ -22,11 +22,8 @@ namespace SSEInvoice.Controllers
             _logger = logger;
             _db = db;
         }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
+        public IActionResult Create() => View();
 
         [HttpPost]
         public IActionResult Create(Customer pCustomer)
