@@ -17,17 +17,14 @@ namespace SSEInvoice.Models
         public string ProductCode { get; set; }
         [Required]
         public string Description { get; set; }
+        public DateTime CreatedOn { get; set; } 
+        public DateTime UpdateOn { get; set; } = DateTime.Now;
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
         [ForeignKey("Brand")]
         public int BrandId { get; set; }
         public Brand Brand { get; set; }
-        [ForeignKey("Stocks")]
-        public int? StocksId { get; set; }
-        public Stocks Stocks { get; set; } = new Stocks();
-
-
     }
    
 }

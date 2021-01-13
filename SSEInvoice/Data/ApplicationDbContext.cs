@@ -18,6 +18,8 @@ namespace SSEInvoice.Data
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Product> Product { get; set; }
         public DbSet<Stocks> Stocks { get; set; }
+        public DbSet<Unit> Units { get; set; }
+        public DbSet<Varient> Varients { get; set; }
 
 
     }

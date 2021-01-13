@@ -22,7 +22,7 @@ namespace SSEInvoice.Controllers
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            var ProductList = _context.Product.Include(p => p.Brand).Include(p => p.Category).Include(p=> p.Stocks);
+            var ProductList = _context.Product.Include(p => p.Brand).Include(p => p.Category);
             return View(await ProductList.ToListAsync());
         }
 
@@ -37,7 +37,6 @@ namespace SSEInvoice.Controllers
             var product = await _context.Product
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
-                .Include(p=>p.Stocks)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -126,47 +125,47 @@ namespace SSEInvoice.Controllers
           
             return View(product);
         }
-        public IActionResult AddStock(int? id)
-        {
-            Product obj = new Product();
+        //public IActionResult AddStock(int? id)
+        //{
+        //    Product obj = new Product();
 
-            if (id == null)
-            {
-                return View(obj);
-            }
-            //this for edit
-            obj = _context.Product.Include(u => u.Stocks).FirstOrDefault(u => u.ProductId == id);
+        //    if (id == null)
+        //    {
+        //        return View(obj);
+        //    }
+        //    //this for edit
+        //    obj = _context.Product.Include(u => u.Stocks).FirstOrDefault(u => u.ProductId == id);
 
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            return View(obj);
-        }
+        //    if (obj == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(obj);
+        //}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddStock(Product obj)
-        {
-            if (obj.Stocks.StocksId == 0)
-            {
-                //this is create
-                _context.Stocks.Add(obj.Stocks);
-                _context.SaveChanges();
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult AddStock(Product obj)
+        //{
+        //    if (obj.Stocks.StocksId == 0)
+        //    {
+        //        //this is create
+        //        _context.Stocks.Add(obj.Stocks);
+        //        _context.SaveChanges();
 
-                var StockFromDb = _context.Product.FirstOrDefault(u => u.ProductId == obj.ProductId);
-                StockFromDb.StocksId = obj.Stocks.StocksId;
-                _context.SaveChanges();
-            }
-            else
-            {
-                //this is an update
-                _context.Stocks.Update(obj.Stocks);
-                _context.SaveChanges();
-            }
+        //        var StockFromDb = _context.Product.FirstOrDefault(u => u.ProductId == obj.ProductId);
+        //        StockFromDb.StocksId = obj.Stocks.StocksId;
+        //        _context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        //this is an update
+        //        _context.Stocks.Update(obj.Stocks);
+        //        _context.SaveChanges();
+        //    }
 
-            return RedirectToAction(nameof(Index));
-        }
+        //    return RedirectToAction(nameof(Index));
+        //}
 
 
         // GET: Product/Delete/5
