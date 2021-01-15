@@ -12,6 +12,8 @@ namespace SSEInvoice.Models
         public int UnitId { get; set; }
         [Required]
         public string UnitName { get; set; }
+        //[Required]
+        //public string ShortName { get; set; }
         [Required]
         public string Description { get; set; }
 

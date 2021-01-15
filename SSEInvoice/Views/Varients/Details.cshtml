@@ -18,29 +18,23 @@
             @Html.DisplayFor(model => model.Product.ProductName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.Brand)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Product.Brand.BrandName)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Unit)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Unit.UnitName)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.VarientName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.VarientName)
         </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Size)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Size)  @Html.DisplayFor(model => model.Unit.UnitName)
+            @Html.DisplayFor(model => model.Size)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SGST)
@@ -54,14 +48,13 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CGST)
         </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Price)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
-
-
     </dl>
 </div>
 <div>

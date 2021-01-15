@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +11,24 @@ using SSEInvoice.Models;
 
 namespace SSEInvoice.Controllers
 {
-    public class VarientsController : Controller
+    public class StocksController : Controller
     {
         private readonly ApplicationDbContext _context;
+       
 
-        public VarientsController(ApplicationDbContext context)
+        public StocksController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Varients
+        // GET: Stocks
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Varients.Include(v => v.Product).Include(v => v.Unit);
+            var applicationDbContext = _context.Stocks.Include(s => s.Product).Include(s => s.Varient);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Varients/Details/5
+        // GET: Stocks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +36,50 @@ namespace SSEInvoice.Controllers
                 return NotFound();
             }
 
-            var varient = await _context.Varients
-                .Include(v => v.Product)
-                .Include(v => v.Unit)
-                .FirstOrDefaultAsync(m => m.VarientId == id);
-            if (varient == null)
+            var stocks = await _context.Stocks
+                .Include(s => s.Product)
+                .Include(s => s.Varient)
+                .FirstOrDefaultAsync(m => m.StocksId == id);
+            if (stocks == null)
             {
                 return NotFound();
             }
 
-            return View(varient);
+            return View(stocks);
         }
 
-        // GET: Varients/Create
+        // GET: Stocks/Create
         public IActionResult Create()
         {
             ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName");
-            ViewData["UnitId"] = new SelectList(_context.Units, "UnitId", "UnitName");
             return View();
         }
-
-        // POST: Varients/Create
+        [HttpGet]
+        public JsonResult FindVarient(int product)
+        { 
+            var results= _context.Varients.Where(x => x.ProductId == product).Select(x => new { VarientName = x.VarientName, VarientId = x.VarientId});
+           
+            return Json(results);
+        }
+        // POST: Stocks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VarientId,VarientName,Price,Size,SGST,CGST,UnitId,ProductId")] Varient varient)
+        public async Task<IActionResult> Create([Bind("StocksId,Quantity,ProductId,VarientId")] Stocks stocks)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(varient);
+                _context.Add(stocks);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", varient.ProductId);
-            ViewData["UnitId"] = new SelectList(_context.Units, "UnitId", "UnitName", varient.UnitId);
-            return View(varient);
+            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", stocks.ProductId);
+            ViewData["VarientId"] = new SelectList(_context.Varients, "VarientId", "VarientName", stocks.VarientId);
+            return View(stocks);
         }
 
-        // GET: Varients/Edit/5
+        // GET: Stocks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,24 +87,24 @@ namespace SSEInvoice.Controllers
                 return NotFound();
             }
 
-            var varient = await _context.Varients.FindAsync(id);
-            if (varient == null)
+            var stocks = await _context.Stocks.FindAsync(id);
+            if (stocks == null)
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", varient.ProductId);
-            ViewData["UnitId"] = new SelectList(_context.Units, "UnitId", "UnitName", varient.UnitId);
-            return View(varient);
+            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", stocks.ProductId);
+            ViewData["VarientId"] = new SelectList(_context.Varients, "VarientId", "VarientName", stocks.VarientId);
+            return View(stocks);
         }
 
-        // POST: Varients/Edit/5
+        // POST: Stocks/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VarientId,VarientName,Price,Size,SGST,CGST,UnitId,ProductId")] Varient varient)
+        public async Task<IActionResult> Edit(int id, [Bind("StocksId,Quantity,ProductId,VarientId")] Stocks stocks)
         {
-            if (id != varient.VarientId)
+            if (id != stocks.StocksId)
             {
                 return NotFound();
             }
@@ -106,12 +113,12 @@ namespace SSEInvoice.Controllers
             {
                 try
                 {
-                    _context.Update(varient);
+                    _context.Update(stocks);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!VarientExists(varient.VarientId))
+                    if (!StocksExists(stocks.StocksId))
                     {
                         return NotFound();
                     }
@@ -122,12 +129,12 @@ namespace SSEInvoice.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", varient.ProductId);
-            ViewData["UnitId"] = new SelectList(_context.Units, "UnitId", "UnitName", varient.UnitId);
-            return View(varient);
+            ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", stocks.ProductId);
+            ViewData["VarientId"] = new SelectList(_context.Varients, "VarientId", "VarientName", stocks.VarientId);
+            return View(stocks);
         }
 
-        // GET: Varients/Delete/5
+        // GET: Stocks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,32 +142,32 @@ namespace SSEInvoice.Controllers
                 return NotFound();
             }
 
-            var varient = await _context.Varients
-                .Include(v => v.Product)
-                .Include(v => v.Unit)
-                .FirstOrDefaultAsync(m => m.VarientId == id);
-            if (varient == null)
+            var stocks = await _context.Stocks
+                .Include(s => s.Product)
+                .Include(s => s.Varient)
+                .FirstOrDefaultAsync(m => m.StocksId == id);
+            if (stocks == null)
             {
                 return NotFound();
             }
 
-            return View(varient);
+            return View(stocks);
         }
 
-        // POST: Varients/Delete/5
+        // POST: Stocks/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var varient = await _context.Varients.FindAsync(id);
-            _context.Varients.Remove(varient);
+            var stocks = await _context.Stocks.FindAsync(id);
+            _context.Stocks.Remove(stocks);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VarientExists(int id)
+        private bool StocksExists(int id)
         {
-            return _context.Varients.Any(e => e.VarientId == id);
+            return _context.Stocks.Any(e => e.StocksId == id);
         }
     }
 }

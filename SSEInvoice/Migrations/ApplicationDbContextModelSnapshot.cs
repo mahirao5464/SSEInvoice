@@ -337,6 +337,39 @@ namespace SSEInvoice.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("SSEInvoice.Models.CustomerVarient", b =>
+                {
+                    b.Property<int>("CustomerVarientVM_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InvoiceNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("VarientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerVarientVM_Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("VarientId");
+
+                    b.ToTable("CustomerVarients");
+                });
+
             modelBuilder.Entity("SSEInvoice.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
@@ -384,15 +417,20 @@ namespace SSEInvoice.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("VarientId")
+                        .HasColumnType("int");
 
                     b.HasKey("StocksId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("VarientId");
 
                     b.ToTable("Stocks");
                 });
@@ -523,6 +561,21 @@ namespace SSEInvoice.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SSEInvoice.Models.CustomerVarient", b =>
+                {
+                    b.HasOne("SSEInvoice.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SSEInvoice.Models.Varient", "Varient")
+                        .WithMany()
+                        .HasForeignKey("VarientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SSEInvoice.Models.Product", b =>
                 {
                     b.HasOne("SSEInvoice.Models.Brand", "Brand")
@@ -542,7 +595,15 @@ namespace SSEInvoice.Migrations
                 {
                     b.HasOne("SSEInvoice.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SSEInvoice.Models.Varient", "Varient")
+                        .WithMany()
+                        .HasForeignKey("VarientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SSEInvoice.Models.Varient", b =>

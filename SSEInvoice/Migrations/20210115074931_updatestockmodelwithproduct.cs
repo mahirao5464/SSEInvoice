@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SSEInvoice.Migrations
 {
-    public partial class AddMoigrationToDb : Migration
+    public partial class updatestockmodelwithproduct : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -75,16 +75,17 @@ namespace SSEInvoice.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stocks",
+                name: "Units",
                 columns: table => new
                 {
-                    StocksId = table.Column<int>(nullable: false)
+                    UnitId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<long>(nullable: false)
+                    UnitName = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stocks", x => x.StocksId);
+                    table.PrimaryKey("PK_Units", x => x.UnitId);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,9 +203,10 @@ namespace SSEInvoice.Migrations
                     ProductName = table.Column<string>(nullable: false),
                     ProductCode = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    UpdateOn = table.Column<DateTime>(nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
-                    BrandId = table.Column<int>(nullable: false),
-                    StocksId = table.Column<int>(nullable: false)
+                    BrandId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -221,11 +223,56 @@ namespace SSEInvoice.Migrations
                         principalTable: "Category",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stocks",
+                columns: table => new
+                {
+                    StocksId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<double>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stocks", x => x.StocksId);
                     table.ForeignKey(
-                        name: "FK_Product_Stocks_StocksId",
-                        column: x => x.StocksId,
-                        principalTable: "Stocks",
-                        principalColumn: "StocksId",
+                        name: "FK_Stocks_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Varients",
+                columns: table => new
+                {
+                    VarientId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VarientName = table.Column<string>(nullable: false),
+                    Price = table.Column<long>(nullable: false),
+                    Size = table.Column<string>(nullable: false),
+                    SGST = table.Column<int>(nullable: false),
+                    CGST = table.Column<int>(nullable: false),
+                    UnitId = table.Column<int>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Varients", x => x.VarientId);
+                    table.ForeignKey(
+                        name: "FK_Varients_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Varients_Units_UnitId",
+                        column: x => x.UnitId,
+                        principalTable: "Units",
+                        principalColumn: "UnitId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -271,6 +318,35 @@ namespace SSEInvoice.Migrations
                         principalTable: "Customers",
                         principalColumn: "CustomerId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerVarients",
+                columns: table => new
+                {
+                    CustomerVarientVM_Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    InvoiceNo = table.Column<string>(nullable: false),
+                    Quantity = table.Column<long>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    CustomerId = table.Column<int>(nullable: false),
+                    VarientId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerVarients", x => x.CustomerVarientVM_Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerVarients_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerVarients_Varients_VarientId",
+                        column: x => x.VarientId,
+                        principalTable: "Varients",
+                        principalColumn: "VarientId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -323,6 +399,16 @@ namespace SSEInvoice.Migrations
                 column: "PermanentAddressID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerVarients_CustomerId",
+                table: "CustomerVarients",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerVarients_VarientId",
+                table: "CustomerVarients",
+                column: "VarientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Product_BrandId",
                 table: "Product",
                 column: "BrandId");
@@ -333,10 +419,19 @@ namespace SSEInvoice.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_StocksId",
-                table: "Product",
-                column: "StocksId",
-                unique: true);
+                name: "IX_Stocks_ProductId",
+                table: "Stocks",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Varients_ProductId",
+                table: "Varients",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Varients_UnitId",
+                table: "Varients",
+                column: "UnitId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Customers_Address_PermanentAddressID",
@@ -369,7 +464,10 @@ namespace SSEInvoice.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "CustomerVarients");
+
+            migrationBuilder.DropTable(
+                name: "Stocks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -378,13 +476,19 @@ namespace SSEInvoice.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Varients");
+
+            migrationBuilder.DropTable(
+                name: "Product");
+
+            migrationBuilder.DropTable(
+                name: "Units");
+
+            migrationBuilder.DropTable(
                 name: "Brands");
 
             migrationBuilder.DropTable(
                 name: "Category");
-
-            migrationBuilder.DropTable(
-                name: "Stocks");
 
             migrationBuilder.DropTable(
                 name: "Customers");

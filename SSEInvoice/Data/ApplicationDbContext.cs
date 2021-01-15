@@ -20,6 +20,7 @@ namespace SSEInvoice.Data
         public DbSet<Stocks> Stocks { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Varient> Varients { get; set; }
+        public DbSet<CustomerVarient> CustomerVarients { get; set; }
 
 
     }
