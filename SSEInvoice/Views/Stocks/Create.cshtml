@@ -50,14 +50,20 @@
             url: '@Url.Action("FindVarient", "Stocks")',
             type: "Get",
             data: { product: selectedValue },
-            success: function (data) {
-                alert(data.VarientId);
-                var s = '<option value="-1">Please Select a Department</option>';
-                for (var i = 0; i < data.length; i++) {
-                    s += '<option value="' + data[i].VarientId + '">' + data[i].VarientName + '</option>';
-                }
-                $("#VarientId").html(s);
-            }  
+            success: function (res) {
+                console.log();
+               
+                $.each(res, function (data, value) {
+
+                    $("#VarientId").append($("<option></option>").val(value.VarientId).html(value.VarientName));
+                })
+            
+ 
+               // $("#VarientId").html(s);
+            },
+            error: function (err) {
+                console.log(err);
+            }
             
    
         });
