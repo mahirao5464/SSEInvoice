@@ -13,6 +13,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
                 <select id="ProductName" asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId">
@@ -25,17 +26,17 @@
             </div>
             <div class="form-group">
                 <label for="CurrentValue"><b>Current Value in Stock</b></label>
-                <input type="tel" class="form-control" id="CurrentValue"  onkeyup="sum()"  disabled />
+                <input type="tel" class="form-control" id="CurrentValue" onkeyup="sum()" disabled />
             </div>
             <div class="form-group">
                 <label for="AddStockValue"><b>Add Value in Stock</b></label>
-                <input type="text" class="form-control" id="AddStockValue"  onkeyup="sum()" />
+                <input type="text" class="form-control" id="AddStockValue" onkeyup="sum()" />
             </div>
 
 
             <div class="form-group">
                 <label asp-for="Quantity" class="control-label"> Total Stock</label>
-                <input asp-for="Quantity" class="form-control"  id="TotalStock"/>
+                <input asp-for="Quantity" class="form-control" id="TotalStock" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -114,8 +115,13 @@
             type: "Get",
             data: { productId: productValue, varientId: selectedValue },
             success: function (res) {
+                if (res != null) {
+
+                    $('#CurrentValue').val(res.data);
+
+                  
+                }
                 console.log(res.data);
-                $('#CurrentValue').val(res.data);  
             },
             error: function (err) {
                 console.log(err);

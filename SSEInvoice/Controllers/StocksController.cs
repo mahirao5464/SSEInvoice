@@ -80,8 +80,8 @@ namespace SSEInvoice.Controllers
 
             try
             {
-                var results = _context.Stocks.Where(el => el.ProductId == productId && el.VarientId == varientId).Select(el => el.Quantity).FirstOrDefault();
-                return Json(new { data = results });
+                var results = _context.Stocks.Where(el => el.ProductId == productId && el.VarientId == varientId).Select(el =>new { Quantity = el.Quantity, StockId = el.StocksId}).FirstOrDefault();
+                return Json(new { data = results?.Quantity , StockId = results?.StockId});
             }
             catch (Exception ex)
             {
@@ -100,19 +100,11 @@ namespace SSEInvoice.Controllers
         {
             if (ModelState.IsValid)
             {
-                var StockInDb = _context.Stocks.Where(el => el.ProductId == stocks.ProductId && el.VarientId == stocks.VarientId).FirstOrDefault();
-               if (StockInDb == null)
-                {
-                    await _context.Stocks.AddAsync(stocks);
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    stocks.StocksId = StockInDb.StocksId;
-                    _context.Update(stocks);
-                    await _context.SaveChangesAsync();
-
-                }
+                var valuefromdb = await _context.Stocks.FirstOrDefaultAsync(el => el.VarientId == stocks.VarientId && el.ProductId == stocks.ProductId);
+                if (valuefromdb != null) _context.Remove(valuefromdb);
+                
+                 await _context.Stocks.AddAsync(stocks);
+                await _context.SaveChangesAsync();
                
                 return RedirectToAction(nameof(Index));
             }
