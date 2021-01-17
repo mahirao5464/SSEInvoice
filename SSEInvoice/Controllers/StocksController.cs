@@ -61,8 +61,7 @@ namespace SSEInvoice.Controllers
             
             try
             {
-               
-                var results = _context.Varients.Where(x => x.ProductId == product).Select(x => new { VarientName = x.VarientName, VarientId = x.VarientId }).DefaultIfEmpty().ToList();
+                var results = _context.Varients.Where(x => x.ProductId == product).Select(x => new { VarientName = x.VarientName, VarientId = x.VarientId });
 
                 return Json(new { data = results });
             }
@@ -74,6 +73,24 @@ namespace SSEInvoice.Controllers
            
             
         }
+        [HttpGet]
+        public JsonResult CurrentInStock(int productId, int varientId)
+        {
+
+
+            try
+            {
+                var results = _context.Stocks.Where(el => el.ProductId == productId && el.VarientId == varientId).Select(el => el.Quantity).FirstOrDefault();
+                return Json(new { data = results });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+
+
+        }
         // POST: Stocks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -83,8 +100,20 @@ namespace SSEInvoice.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(stocks);
-                await _context.SaveChangesAsync();
+                var StockInDb = _context.Stocks.Where(el => el.ProductId == stocks.ProductId && el.VarientId == stocks.VarientId).FirstOrDefault();
+               if (StockInDb == null)
+                {
+                    await _context.Stocks.AddAsync(stocks);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    stocks.StocksId = StockInDb.StocksId;
+                    _context.Update(stocks);
+                    await _context.SaveChangesAsync();
+
+                }
+               
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductId"] = new SelectList(_context.Product, "ProductId", "ProductName", stocks.ProductId);

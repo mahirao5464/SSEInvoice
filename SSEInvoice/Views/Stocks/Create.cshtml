@@ -23,51 +23,128 @@
                 <label for="VarientId"><b>Varient Name</b></label>
                 <select class="form-control" id="VarientId" name="VarientId"></select>
             </div>
+            <div class="form-group">
+                <label for="CurrentValue"><b>Current Value in Stock</b></label>
+                <input type="tel" class="form-control" id="CurrentValue"  onkeyup="sum()"  disabled />
+            </div>
+            <div class="form-group">
+                <label for="AddStockValue"><b>Add Value in Stock</b></label>
+                <input type="text" class="form-control" id="AddStockValue"  onkeyup="sum()" />
+            </div>
 
-                
 
-                <div class="form-group">
-                    <label asp-for="Quantity" class="control-label"></label>
-                    <input asp-for="Quantity" class="form-control" />
-                    <span asp-validation-for="Quantity" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"> Total Stock</label>
+                <input asp-for="Quantity" class="form-control"  id="TotalStock"/>
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
+<div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">No Varients are added in this product</h4>
+
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                Please Add varient: <a asp-action="create" asp-controller="varients" class="btn btn-success">Add Varient-></a>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 @section Scripts{
     <!--Inside my script -->
     <script>
+
     $('#ProductName').change(function () {
         var selectedValue = $(this).val();
+        $("#VarientId").empty();
+        if (selectedValue!=0)
         $.ajax({
             url: '@Url.Action("FindVarient", "Stocks")',
             type: "Get",
             data: { product: selectedValue },
             success: function (res) {
-                console.log();
-               
-                $.each(res, function (data, value) {
+                console.log(res.data);
+                $("#VarientId").empty();
+                $("#VarientId").append($("<option selected disabled='true'></option>").val(0).html("Please Select Varient"));
+                if (res.data.length == 0) {
+                    $('#myModal').modal('show');
+                }else
+                $.each(res.data, function (data, value) {
 
-                    $("#VarientId").append($("<option></option>").val(value.VarientId).html(value.VarientName));
+                    $("#VarientId").append($("<option></option>").val(value.varientId).html(value.varientName));
                 })
-            
- 
+
+
                // $("#VarientId").html(s);
             },
             error: function (err) {
                 console.log(err);
             }
-            
-   
+
+
         });
     });
+     $('#VarientId').change(function () {
+         var selectedValue = $(this).val();
+         var productValue = $("#ProductName").val();
+        
+        if (selectedValue!=0)
+        $.ajax({
+            url: '@Url.Action("CurrentInStock", "Stocks")',
+            type: "Get",
+            data: { productId: productValue, varientId: selectedValue },
+            success: function (res) {
+                console.log(res.data);
+                $('#CurrentValue').val(res.data);  
+            },
+            error: function (err) {
+                console.log(err);
+            }
+
+
+        });
+     });
+        function sum() {
+
+            var CurrentValue = document.getElementById('CurrentValue').value;
+            var AddStockValue = document.getElementById('AddStockValue').value;
+
+            if (CurrentValue == '') {
+                CurrentValue = 0
+                var TotalStock = parseInt(CurrentValue) + parseInt(AddStockValue);
+                document.getElementById('TotalStock').value = TotalStock;
+            }
+            else if (AddStockValue == '') {
+                AddStockValue = 0;
+                var TotalStock = parseInt(CurrentValue) + parseInt(AddStockValue);
+                document.getElementById('TotalStock').value = TotalStock;
+            }
+            else {
+                var TotalStock = parseInt(CurrentValue) + parseInt(AddStockValue);
+                document.getElementById('TotalStock').value = TotalStock;
+            }
+
+        }
     </script>
 
 }
