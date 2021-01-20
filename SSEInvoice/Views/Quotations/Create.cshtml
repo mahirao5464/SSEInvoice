@@ -1,0 +1,103 @@
+﻿@model SSEInvoice.Models.Quotation
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Quotation</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label"></label>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                    <option>Select Customer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="BillingTo" />
+                <label for="BillingAddress" class="control-label">BillingAddress</label>
+                <textarea rows="5" type="text" id="BillingAddress" class="form-control" disabled></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubTotal" class="control-label"></label>
+                <input asp-for="SubTotal" class="form-control" />
+                <span asp-validation-for="SubTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalTax" class="control-label"></label>
+                <input asp-for="TotalTax" class="form-control" />
+                <span asp-validation-for="TotalTax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippingCharges" class="control-label"></label>
+                <input asp-for="ShippingCharges" class="form-control" />
+                <span asp-validation-for="ShippingCharges" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalAmount" class="control-label"></label>
+                <input asp-for="TotalAmount" class="form-control" />
+                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedOn" class="control-label"></label>
+                <input asp-for="CreatedOn" class="form-control" />
+                <span asp-validation-for="CreatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdatedOn" class="control-label"></label>
+                <input asp-for="UpdatedOn" class="form-control" />
+                <span asp-validation-for="UpdatedOn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    $('#CustomerId').change(function () {
+    var selectedValue = $(this).val();
+    if (selectedValue!=0)
+    $.ajax({
+    url: '@Url.Action("FindBillingAddress", "Quotations")',
+    type: "Get",
+    data: { CustomerId: selectedValue },
+    success: function (res) {
+        console.log(res);
+        if (res.billingAddress != null) {
+            let bAddress = res.billingAddress;
+            $("#BillingTo").val(bAddress.id);
+            $("#BillingAddress").val(
+                `${bAddress.line1},
+${bAddress.line2},
+${bAddress.city},
+${bAddress.state},
+Pin Code : ${bAddress.pinCode},
+
+                `
+            );
+
+        }
+    },
+    error: function (err) {
+    console.log(err);
+    }
+
+
+    });
+    });
+        </script>
+}

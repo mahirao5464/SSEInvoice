@@ -19,9 +19,17 @@ namespace SSEInvoice.Models
         [ForeignKey("Address")]
         public int BillingTo { get; set; }
         public string QuotNumber { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double SubTotal { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double TotalTax { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double ShippingCharges { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double TotalAmount { get; set; }// Total Amount including all the charges subtotal + tax +shippingcharges + other charges if available
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
