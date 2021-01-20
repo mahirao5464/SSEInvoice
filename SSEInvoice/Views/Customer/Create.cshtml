@@ -174,10 +174,14 @@
 <script>
     var currentSize = "@Model?.ShipingAddress?.Count()";
     function AddAddress() {
-        if (currentSize == "") currentSize = "0";
-        currentSize = Number(currentSize);
+        var btnHtml = "";
+        if (currentSize == "") {
+            currentSize = "0";
+            btnHtml = `<input type="button" class="btn btn-primary" value="Same As Permanent"/>
+                        `;
+        }
         var innerHtml = `
-    <strong>Address : ${currentSize+1} </strong>
+    <strong>Address : ${currentSize + 1} </strong>${btnHtml}
      <div class="border p-1">
                         <div class="form-group">
                             <label for="ShipingAddress[${currentSize}]_Line1">Line1</label>

@@ -169,12 +169,20 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-    var currentSize = "@Model?.ShipingAddress?.Count()";
-    function AddAddress() {
-        if (currentSize == "") currentSize = "0";
+        var currentSize = "@Model?.ShipingAddress?.Count()";
+        function CopyAddress() {
+            $("#ShipingAddress[0]_Line1").val($("#PermanentAddress_Line1").val());
+        }
+        function AddAddress() {
+            var btnHtml = "";
+            if (currentSize == "") {
+                currentSize = "0";
+                btnHtml = `<input type="button" class="btn btn-primary" value="Same As Permanent" onclick="CopyAddress();"/>
+                        `;
+            }
         currentSize = Number(currentSize);
         var innerHtml = `
-    <strong>Address : ${currentSize+1} </strong>
+    <strong>Address : ${currentSize + 1} </strong>${btnHtml}
      <div class="border p-1">
                         <div class="form-group">
                             <label for="ShipingAddress[${currentSize}]_Line1">Line1</label>
