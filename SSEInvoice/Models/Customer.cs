@@ -15,12 +15,15 @@ namespace SSEInvoice.Models
         [Required]
         [Display(Name ="Enter Contact Person Name")]
         public string ContactPersonName { get; set; }
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
         [Required]
         [Display(Name ="Permanent Address ")]
         public virtual Address PermanentAddress { get; set; }
         [Required(ErrorMessage = "Shipping Address is required")]
         public virtual IList<Address> ShipingAddress { get; set; }
         [Required]
+        [DataType(DataType.PhoneNumber)]
         public string  Phone { get; set; }//
         [Required]
         public string GSTNumber { get; set; }// length 15
@@ -44,6 +47,7 @@ namespace SSEInvoice.Models
         [Required]
         public string State { get; set; }
         [Required]
+        [DataType(DataType.PostalCode)]
         public int PINCode { get; set; }
     }
 }
