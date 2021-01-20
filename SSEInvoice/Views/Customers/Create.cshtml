@@ -21,6 +21,11 @@
                         <span asp-validation-for="CustomerName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="ContactPersonName" class="control-label"></label>
+                        <input asp-for="ContactPersonName" class="form-control" />
+                        <span asp-validation-for="ContactPersonName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="Phone" class="control-label"></label>
                         <input asp-for="Phone" class="form-control" />
                         <span asp-validation-for="Phone" class="text-danger"></span>
@@ -59,9 +64,9 @@
                                 <input type="text" asp-for="PermanentAddress.State" class="form-control">
                                 <span asp-validation-for="PermanentAddress.State" class="text-danger"></span>
                                 @*<select id="inputState" class="form-control">
-                                        <option selected>Choose...</option>
-                                        <option>...</option>
-                                    </select>*@
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>*@
                             </div>
                             <div class="form-group col-md-6">
                                 <label asp-for="PermanentAddress.StateCode"></label>
@@ -170,14 +175,32 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var currentSize = "@Model?.ShipingAddress?.Count()";
-        function CopyAddress() {
-            $("#ShipingAddress[0]_Line1").val($("#PermanentAddress_Line1").val());
+        function CopyAddress(val) {
+            val.disabled = true;
+            var pAddLine1 = document.getElementById("PermanentAddress_Line1").value;
+            document.getElementById("ShipingAddress[0]_Line1").value = pAddLine1;
+
+            var pAddLine2 = document.getElementById("PermanentAddress_Line2").value;
+            document.getElementById("ShipingAddress[0]_Line2").value = pAddLine2;
+
+            var city = document.getElementById("PermanentAddress_City").value;
+            document.getElementById("ShipingAddress[0]_City").value = city;
+
+            var _State = document.getElementById("PermanentAddress_State").value;
+            document.getElementById("ShipingAddress[0]_State").value = _State;
+
+            var StateCode = document.getElementById("PermanentAddress_StateCode").value;
+            document.getElementById("ShipingAddress[0]_StateCode").value = StateCode;
+
+            var PINCode = document.getElementById("PermanentAddress_PINCode").value;
+            document.getElementById("ShipingAddress[0]_PINCode").value = PINCode;
+
         }
         function AddAddress() {
             var btnHtml = "";
             if (currentSize == "") {
                 currentSize = "0";
-                btnHtml = `<input type="button" class="btn btn-primary" value="Same As Permanent" onclick="CopyAddress();"/>
+                btnHtml = `&nbsp;&nbsp;&nbsp;Same As Permanent: &nbsp;&nbsp;&nbsp;<input type="checkbox" class="btn btn-default" value="Same As Permanent" onclick="CopyAddress(this);"/>
                         `;
             }
         currentSize = Number(currentSize);

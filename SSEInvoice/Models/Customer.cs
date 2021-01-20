@@ -13,6 +13,10 @@ namespace SSEInvoice.Models
         [Required(ErrorMessage ="Customer Name is required")]
         public string  CustomerName { get; set; }
         [Required]
+        [Display(Name ="Enter Contact Person Name")]
+        public string ContactPersonName { get; set; }
+        [Required]
+        [Display(Name ="Permanent Address ")]
         public virtual Address PermanentAddress { get; set; }
         [Required(ErrorMessage = "Shipping Address is required")]
         public virtual IList<Address> ShipingAddress { get; set; }
