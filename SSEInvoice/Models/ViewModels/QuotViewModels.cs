@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SSEInvoice.Models.ViewModels
 {
-    public class StockViewModels
+    public class QuotViewModels
     {
         public ICollection<Product> Products { get; set; }
         public int ProductId { get; set; }

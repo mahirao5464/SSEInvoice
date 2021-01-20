@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210115074121_updatestockmodelwithproduct.cs" />
     <Compile Remove="Migrations\20210115074121_updatestockmodelwithproduct.Designer.cs" />
+    <Compile Remove="Migrations\20210117120214_addquotationandbusinessdetails.cs" />
+    <Compile Remove="Migrations\20210117120214_addquotationandbusinessdetails.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
