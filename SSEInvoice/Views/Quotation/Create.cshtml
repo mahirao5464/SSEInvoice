@@ -2,5 +2,82 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@model SSEInvoice.Models.Quotation
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ProductList = ViewBag.ProductList;
+}
+
 <h1>Create</h1>
 
+<h4>Quotation</h4>
+<hr />
+<form asp-action="Create">
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label"></label>
+                <select class="form-control" asp-items="ViewBag.CustomerId">
+                    <option>Select Customer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="BillingTo" />
+                <label for="BillingAddress" class="control-label">BillingAddress</label>
+                <textarea rows="5" type="text" id="BillingAddress" class="form-control" disabled></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SubTotal" class="control-label"></label>
+                <input asp-for="SubTotal" class="form-control" />
+                <span asp-validation-for="SubTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalTax" class="control-label"></label>
+                <input asp-for="TotalTax" class="form-control" />
+                <span asp-validation-for="TotalTax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ShippingCharges" class="control-label"></label>
+                <input asp-for="ShippingCharges" class="form-control" />
+                <span asp-validation-for="ShippingCharges" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalAmount" class="control-label"></label>
+                <input asp-for="TotalAmount" class="form-control" />
+                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="CreatedOn" />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </div>
+        <div class="col-md-8">
+            <div class="row border">
+                <div class="col-md-8 ">
+                    <div class="form-group ">
+                        <div>
+                            <label class="control-label">Select Product to Add</label>
+                        </div>
+                        <select asp-items="ViewBag.ProductList" id="selectedProduct" class="form-control" multiple name="productList[]">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 p-4">
+                    <input type="button" class="btn btn-primary btn-sm" value="ADD" />
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
