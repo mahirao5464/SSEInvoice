@@ -6,6 +6,8 @@
     var ProductList = ViewBag.ProductList;
 }
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/datatables.min.css" />
 <h1>Create</h1>
 
 <h4>Quotation</h4>
@@ -18,7 +20,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select class="form-control" asp-items="ViewBag.CustomerId">
+                <select id="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
                     <option>Select Customer</option>
                 </select>
             </div>
@@ -56,21 +58,52 @@
         </div>
         <div class="col-md-8">
             <div class="row border">
-                <div class="col-md-8 ">
+                <div class="col-md-6 ">
                     <div class="form-group ">
-                        <div>
-                            <label class="control-label">Select Product to Add</label>
-                        </div>
+
+                        <label class="control-label">Select Product to Add</label>
+
                         <select asp-items="ViewBag.ProductList" id="selectedProduct" class="form-control" multiple name="productList[]">
-                          
                         </select>
                     </div>
                 </div>
-                <div class="col-md-4 p-4">
-                    <input type="button" class="btn btn-primary btn-sm" value="ADD"/>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Count</label>
+                                <input type="number" class="form-control" placeholder="Quantity" />
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Click </label><br />
+                                <input type="button" class="btn btn-primary" value="ADD" />
+
+                            </div>
+                        </div>
+                    </div>
+                   
+                   
+                    
+                </div>
+            </div><br />
+            <div class="row">
+                <div class="col-sm-12 border">
+                    <table style="width:100%" class="dataTable">
+                        <thead>
+                        <th>
+                            ProductName
+                        </th>
+                        <th>
+                            VarientName
+                        </th>
+                        </thead>
+                    </table>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
@@ -80,11 +113,15 @@
 </div>
 
 @section Scripts {
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.23/datatables.min.js"></script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-    $('#CustomerId').change(function () {
+     $('#CustomerId').change(function () {
+         console.log("mmm");
     var selectedValue = $(this).val();
     if (selectedValue!=0)
     $.ajax({
@@ -114,6 +151,7 @@ Pin Code : ${bAddress.pinCode},
     });
 
         $("#selectedProduct").select2();
+        var dataTable = $('.dataTable').DataTable();
 
     </script>
 }
