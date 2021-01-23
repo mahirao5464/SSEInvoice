@@ -58,6 +58,14 @@ namespace SSEInvoice.Controllers
         public IActionResult Create()
         {
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName");
+            var selectListGroup = _context.Product.Select(el => new SelectListGroup() { Name = el.ProductName });
+            var selectlist = _context.Varients.Include(el => el.Product).Select(el => new SelectListItem()
+            {
+                Text = el.VarientName,
+                Value = el.VarientId.ToString(),
+                Group = selectListGroup.FirstOrDefault(elg=>elg.Name == el.Product.ProductName)
+            });
+            ViewData["ProductList"] = selectlist;
             return View();
         }
 

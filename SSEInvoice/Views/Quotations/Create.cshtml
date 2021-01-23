@@ -3,19 +3,22 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ProductList = ViewBag.ProductList;
 }
 
 <h1>Create</h1>
 
 <h4>Quotation</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+<form asp-action="Create">
+    <div class="row">
+
+        <div class="col-md-4">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                <select class="form-control" asp-items="ViewBag.CustomerId">
                     <option>Select Customer</option>
                 </select>
             </div>
@@ -24,6 +27,7 @@
                 <label for="BillingAddress" class="control-label">BillingAddress</label>
                 <textarea rows="5" type="text" id="BillingAddress" class="form-control" disabled></textarea>
             </div>
+
             <div class="form-group">
                 <label asp-for="SubTotal" class="control-label"></label>
                 <input asp-for="SubTotal" class="form-control" />
@@ -44,28 +48,40 @@
                 <input asp-for="TotalAmount" class="form-control" />
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedOn" class="control-label"></label>
-                <input asp-for="CreatedOn" class="form-control" />
-                <span asp-validation-for="CreatedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedOn" class="control-label"></label>
-                <input asp-for="UpdatedOn" class="form-control" />
-                <span asp-validation-for="UpdatedOn" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="CreatedOn" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-        </form>
-    </div>
-</div>
 
+        </div>
+        <div class="col-md-8">
+            <div class="row border">
+                <div class="col-md-8 ">
+                    <div class="form-group ">
+                        <div>
+                            <label class="control-label">Select Product to Add</label>
+                        </div>
+                        <select asp-items="ViewBag.ProductList" id="selectedProduct" class="form-control" multiple name="productList[]">
+                          
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 p-4">
+                    <input type="button" class="btn btn-primary btn-sm" value="ADD"/>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</form>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
     $('#CustomerId').change(function () {
@@ -77,6 +93,8 @@
     data: { CustomerId: selectedValue },
     success: function (res) {
         console.log(res);
+        $("#BillingTo").empty();
+        $("#BillingAddress").empty();
         if (res.billingAddress != null) {
             let bAddress = res.billingAddress;
             $("#BillingTo").val(bAddress.id);
@@ -86,18 +104,16 @@ ${bAddress.line2},
 ${bAddress.city},
 ${bAddress.state},
 Pin Code : ${bAddress.pinCode},
-
-                `
-            );
-
+                `);
         }
     },
     error: function (err) {
     console.log(err);
     }
-
-
     });
     });
-        </script>
+
+        $("#selectedProduct").select2();
+
+    </script>
 }
