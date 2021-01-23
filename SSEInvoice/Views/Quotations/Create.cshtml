@@ -6,8 +6,8 @@
     var ProductList = ViewBag.ProductList;
 }
 
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/datatables.min.css" />
+    <link href="~/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/css/datatables.min.css" />
 <h1>Create</h1>
 
 <h4>Quotation</h4>
@@ -63,42 +63,96 @@
 
                         <label class="control-label">Select Product to Add</label>
 
-                        <select asp-items="ViewBag.ProductList" id="selectedProduct" class="form-control" multiple name="productList[]">
+                        <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control" >
+                            <option>select product</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Count</label>
-                                <input type="number" class="form-control" placeholder="Quantity" />
+                                <input type="number" id="Count" class="form-control" placeholder="Quantity" />
 
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Unit</label>
+                                <input id="UnitName" type="text" class="form-control" placeholder="---" disabled/>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Click </label><br />
-                                <input type="button" class="btn btn-primary" value="ADD" />
+                                <input type="button" class="btn btn-primary" id="addToQuote" value="ADD" />
 
                             </div>
                         </div>
                     </div>
-                   
-                   
-                    
+                </div>
+                <div class="col-md-12">
+                    <div class="card mb-1">
+                        <div class="card-body">
+                            <h5 class="card-title">Selected Product Details &nbsp; Custom Price: <input type="number" class="form-control-sm" placeholder="price" id="CustomPrice"/></h5>
+                            
+                            <div class="row">
+                                <div class="col-md-4 p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Name</h6>
+                                        <span class="card-text" id="ProductNameBox">xyz</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Cost</h6>
+                                        <span class="card-text" id="ProductPriceBox">xyz</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Description</h6>
+                                        <span class="card-text" id="ProductDescBox">xyz</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">CGST</h6>
+                                        <span class="card-text" id="ProductcgstBox">xyz</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">SGST</h6>
+                                        <span class="card-text" id="ProductsgstBox">xyz</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product HSN</h6>
+                                        <span class="card-text" id="ProducthsnBox">xyz</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
                 </div>
             </div><br />
             <div class="row">
-                <div class="col-sm-12 border">
+                <div class="col-sm-12 border p-1">
                     <table style="width:100%" class="dataTable">
                         <thead>
-                        <th>
-                            ProductName
-                        </th>
-                        <th>
-                            VarientName
-                        </th>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Varient Name</th>
+                                <th>Varient ID</th>
+                                <th>Count</th>
+                                <th>Custom Price</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -114,12 +168,14 @@
 
 @section Scripts {
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script src="~/js/select2.min.js"></script>
 
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.23/datatables.min.js"></script>
+    <script type="text/javascript" src="~/js/datatables.min.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+<script>
+    $("#selectedProduct").select2();
+    var dataTable = $('.dataTable').DataTable();
      $('#CustomerId').change(function () {
          console.log("mmm");
     var selectedValue = $(this).val();
@@ -150,8 +206,73 @@ Pin Code : ${bAddress.pinCode},
     });
     });
 
-        $("#selectedProduct").select2();
-        var dataTable = $('.dataTable').DataTable();
+        
+    
 
-    </script>
+    function selectProduct(val) {
+        $("#UnitName").val("");
+        console.log(val);
+        if (val !="select product")
+          $.ajax({
+    url: '@Url.Action("GetUnit", "Quotations")',
+    type: "Get",
+    data: { VarientId: val },
+    success: function (res) {
+        console.log(res);
+        $("#UnitName").empty();
+        $("#UnitName").val(res.varientDetail.unit.unitName);
+        $("#ProductNameBox").html(`<strong>${res.varientDetail.product.productName}</strong>`);
+        $("#ProductPriceBox").html(`<strong>${res.varientDetail.price}</strong>`);
+        $("#ProductDescBox").html(`<strong>${res.varientDetail.product.description}</strong>`);
+        $("#ProductcgstBox").html(`<strong>${res.varientDetail.cgst}</strong>`);
+        $("#ProductsgstBox").html(`<strong>${res.varientDetail.sgst}</strong>`);
+        $("#ProducthsnBox").html(`<strong>${res.varientDetail.product.productCode}</strong>`);
+
+
+        
+    },
+    error: function (err) {
+    console.log(err);
+    }
+    });
+    }
+    var CustomVarient  = new Array();
+    function isAvailable(varid) {
+        return CustomVarient.find(el => el.VarientId == varid) == undefined;
+    }
+    //add row to table 
+    $('#addToQuote').on('click', function () {
+        
+        let VarientId = $("#selectedProduct").val();
+        let VarientName = $("#selectedProduct option:selected").text();
+        let ProductName = $("#ProductNameBox").html();
+        let Count = $("#Count").val();
+        let CustomPrice = $("#CustomPrice").val();
+        if (!isNaN(VarientId) && !isNaN(Count) && !isNaN(CustomPrice) && Count != 0 && CustomPrice > 0 && isAvailable(VarientId)) {
+            CustomVarient.push({
+                "VarientId": VarientId,
+                "Count": Count,
+                "CustomPrice": CustomPrice
+            });
+            dataTable.row.add([
+                ProductName,
+                VarientName,
+                VarientId,
+                Count,
+                CustomPrice,
+                `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
+            ]).draw(false);
+        } else {
+            alert("fill all fields ");
+        }
+        
+    });
+    function deleteRow(inputBtnRef, varId) { 
+    CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1)
+        dataTable
+            .row($(inputBtnRef).parents('tr'))
+            .remove()
+            .draw();
+    }
+</script>
 }
