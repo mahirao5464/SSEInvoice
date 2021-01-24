@@ -13,6 +13,7 @@ namespace SSEInvoice.Models
         public int Id { get; set; }
         [ForeignKey("Address")]
         public int BusinessAddress { get; set; }
+        public virtual Address Address { get; set; }
         [Required]
         public string GSTNumber { get; set; }
         public BankDetail BankDetail { get; set; }

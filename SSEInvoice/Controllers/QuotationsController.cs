@@ -32,8 +32,10 @@ namespace SSEInvoice.Controllers
             {
                 return BadRequest();
             }
+            var BusinessStateCode = _context.BusinessDetails.Include(el => el.Address).FirstOrDefault().Address.StateCode;
+            var customerAdd = _context.Customers.Include(el => el.PermanentAddress).FirstOrDefault(el => el.CustomerId == CustomerId).PermanentAddress;
 
-            return Json( new { BillingAddress = _context.Customers.Include(el => el.PermanentAddress).FirstOrDefault(el => el.CustomerId == CustomerId).PermanentAddress });
+            return Json( new { BillingAddress = customerAdd, IsOnlyCGST = BusinessStateCode!= customerAdd.StateCode });
         }
 
         // GET: Quotations/Details/5

@@ -1,0 +1,113 @@
+﻿@model SSEInvoice.Models.BusinessDetails
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>BusinessDetails</h4>
+<hr />
+<div class="row">
+    
+    <div class="col-md-12">
+        <form asp-action="Edit">
+            <div class="row">
+                <div class="col-md-6">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <h4>Address :</h4>
+                    <div class="border p-1">
+                        <div class="form-group">
+                            <input type="hidden" asp-for="Address.ID" />
+                            <label asp-for="Address.Line1"></label>
+                            <input type="text" class="form-control" asp-for="Address.Line1" placeholder="1234 Main St">
+                            <span asp-validation-for="Address.Line1" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address.Line2"></label>
+                            <input type="text" class="form-control" asp-for="Address.Line2" placeholder="Apartment, studio, or floor">
+                            <span asp-validation-for="Address.Line2" class="text-danger"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Address.City"></label>
+                                <input type="text" asp-for="Address.City" class="form-control">
+                                <span asp-validation-for="Address.City" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="Address.State"></label>
+                                <input type="text" asp-for="Address.State" class="form-control">
+                                <span asp-validation-for="Address.State" class="text-danger"></span>
+                                @*<select id="inputState" class="form-control">
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>*@
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label asp-for="Address.StateCode"></label>
+                                <input type="text" asp-for="Address.StateCode" class="form-control">
+                                <span asp-validation-for="Address.StateCode" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label asp-for="Address.PINCode"></label>
+                                <input type="text" class="form-control" asp-for="Address.PINCode">
+                                <span asp-validation-for="Address.PINCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GSTNumber" class="control-label"></label>
+                        <input asp-for="GSTNumber" class="form-control" />
+                        <span asp-validation-for="GSTNumber" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h4>Bank Detail :</h4>
+                    <div class="border p-1">
+                        <div class="form-group">
+                            <input type="hidden" asp-for="BankDetail.Id" />
+                            <label asp-for="BankDetail.Name" class="control-label"></label>
+                            <input asp-for="BankDetail.Name" class="form-control" />
+                            <span asp-validation-for="BankDetail.Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BankDetail.BankName" class="control-label"></label>
+                            <input asp-for="BankDetail.BankName" class="form-control" />
+                            <span asp-validation-for="BankDetail.BankName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BankDetail.BranchName" class="control-label"></label>
+                            <input asp-for="BankDetail.BranchName" class="form-control" />
+                            <span asp-validation-for="BankDetail.BranchName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BankDetail.IFSC" class="control-label"></label>
+                            <input asp-for="BankDetail.IFSC" class="form-control" />
+                            <span asp-validation-for="BankDetail.IFSC" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="BankDetail.AccountNumber" class="control-label"></label>
+                            <input asp-for="BankDetail.AccountNumber" class="form-control" />
+                            <span asp-validation-for="BankDetail.AccountNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

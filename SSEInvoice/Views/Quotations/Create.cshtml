@@ -51,9 +51,7 @@
                 <span asp-validation-for="TotalAmount" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="CreatedOn" />
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            
 
         </div>
         <div class="col-md-8">
@@ -102,37 +100,37 @@
                                 <div class="col-md-4 p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">Product Name</h6>
-                                        <span class="card-text" id="ProductNameBox">xyz</span>
+                                        <span class="card-text" id="ProductNameBox"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4  p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">Product Cost</h6>
-                                        <span class="card-text" id="ProductPriceBox">xyz</span>
+                                        <span class="card-text" id="ProductPriceBox"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4  p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">Product Description</h6>
-                                        <span class="card-text" id="ProductDescBox">xyz</span>
+                                        <span class="card-text" id="ProductDescBox"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4  p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">CGST</h6>
-                                        <span class="card-text" id="ProductcgstBox">xyz</span>
+                                        <span class="card-text" id="ProductcgstBox"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4  p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">SGST</h6>
-                                        <span class="card-text" id="ProductsgstBox">xyz</span>
+                                        <span class="card-text" id="ProductsgstBox"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4  p-1">
                                     <div class="border p-1">
                                         <h6 class="card-subtitle mb-2 text-muted">Product HSN</h6>
-                                        <span class="card-text" id="ProducthsnBox">xyz</span>
+                                        <span class="card-text" id="ProducthsnBox"></span>
                                     </div>
                                 </div>
                             </div>
@@ -143,18 +141,41 @@
             </div><br />
             <div class="row">
                 <div class="col-sm-12 border p-1">
-                    <table style="width:100%" class="dataTable">
-                        <thead>
-                            <tr>
-                                <th>Product Name</th>
-                                <th>Varient Name</th>
-                                <th>Varient ID</th>
-                                <th>Count</th>
-                                <th>Custom Price</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <div id="dataTable" style="display: none;">
+                           <table style="width:100%;" class="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Varient Name</th>
+                                    <th>Varient ID</th>
+                                    <th>Count</th>
+                                    <th>Custom Price</th>
+                                    <th>SGST(in %)</th>
+                                    <th>CGST(in %)</th>
+                                    <th>Tax</th>
+                                    <th>Price Including Tax</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div id="dataTableForCgst"  style="display: none;">
+                        <table style="width:100%;" class="dataTableForCgst" >
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Varient Name</th>
+                                    <th>Varient ID</th>
+                                    <th>Count</th>
+                                    <th>Custom Price</th>
+                                    <th>CGST(in %)</th>
+                                    <th>Tax</th>
+                                    <th>Price Including Tax</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -163,6 +184,9 @@
     </div>
 </form>
 <div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
     <a asp-action="Index">Back to List</a>
 </div>
 
@@ -174,10 +198,14 @@
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
+    var IsOnlyCGST = false;
     $("#selectedProduct").select2();
     var dataTable = $('.dataTable').DataTable();
-     $('#CustomerId').change(function () {
-         console.log("mmm");
+    var dataTablecgst = $(".dataTableForCgst").DataTable();
+    $('#CustomerId').change(function () {
+        dataTable.clear();
+        dataTablecgst.clear();
+        CustomVarient = [];
     var selectedValue = $(this).val();
     if (selectedValue!=0)
     $.ajax({
@@ -198,6 +226,14 @@ ${bAddress.city},
 ${bAddress.state},
 Pin Code : ${bAddress.pinCode},
                 `);
+            IsOnlyCGST = res.isOnlyCGST;
+            if (res.isOnlyCGST) {
+                $("#dataTableForCgst").show();
+                $("#dataTable").hide();
+            } else {
+                $("#dataTableForCgst").hide();
+                $("#dataTable").show();
+            }
         }
     },
     error: function (err) {
@@ -208,7 +244,7 @@ Pin Code : ${bAddress.pinCode},
 
         
     
-
+    var LastVarientResponse;
     function selectProduct(val) {
         $("#UnitName").val("");
         console.log(val);
@@ -219,6 +255,7 @@ Pin Code : ${bAddress.pinCode},
     data: { VarientId: val },
     success: function (res) {
         console.log(res);
+        LastVarientResponse = res;
         $("#UnitName").empty();
         $("#UnitName").val(res.varientDetail.unit.unitName);
         $("#ProductNameBox").html(`<strong>${res.varientDetail.product.productName}</strong>`);
@@ -228,8 +265,6 @@ Pin Code : ${bAddress.pinCode},
         $("#ProductsgstBox").html(`<strong>${res.varientDetail.sgst}</strong>`);
         $("#ProducthsnBox").html(`<strong>${res.varientDetail.product.productCode}</strong>`);
 
-
-        
     },
     error: function (err) {
     console.log(err);
@@ -249,30 +284,69 @@ Pin Code : ${bAddress.pinCode},
         let Count = $("#Count").val();
         let CustomPrice = $("#CustomPrice").val();
         if (!isNaN(VarientId) && !isNaN(Count) && !isNaN(CustomPrice) && Count != 0 && CustomPrice > 0 && isAvailable(VarientId)) {
-            CustomVarient.push({
-                "VarientId": VarientId,
-                "Count": Count,
-                "CustomPrice": CustomPrice
-            });
-            dataTable.row.add([
-                ProductName,
-                VarientName,
-                VarientId,
-                Count,
-                CustomPrice,
-                `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
-            ]).draw(false);
+            if (IsOnlyCGST) {
+                let CgstAmount = Number(CustomPrice) * (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)) / 100;
+                CustomVarient.push({
+                    "VarientId": VarientId,
+                    "Count": Count,
+                    "CustomPrice": CustomPrice,
+                    "Cgst": CgstAmount,
+                    "Sgst": 0,
+                    "IsOnlyCgst": true
+                });
+                dataTablecgst.row.add([
+                    ProductName,
+                    VarientName,
+                    VarientId,
+                    Count,
+                    CustomPrice,
+                    (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)),
+                    CgstAmount,
+                    CgstAmount + Number(CustomPrice),
+                    `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
+                ]).draw(false);
+            } else {
+                let CgstAmount = Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
+                let SgstAmount = Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
+                CustomVarient.push({
+                    "VarientId": VarientId,
+                    "Count": Count,
+                    "CustomPrice": CustomPrice,
+                    "Cgst": CgstAmount,
+                    "Sgst": SgstAmount,
+                    "IsOnlyCgst": false
+                });
+                dataTable.row.add([
+                    ProductName,
+                    VarientName,
+                    VarientId,
+                    Count,
+                    CustomPrice,
+                    `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
+                ]).draw(false);
+            }
+            
+           
         } else {
             alert("fill all fields ");
         }
         
     });
     function deleteRow(inputBtnRef, varId) { 
-    CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1)
-        dataTable
-            .row($(inputBtnRef).parents('tr'))
-            .remove()
-            .draw();
+        CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1)
+        if (IsOnlyCGST) {
+            dataTablecgst
+                .row($(inputBtnRef).parents('tr'))
+                .remove()
+                .draw();
+        } else {
+            dataTable
+                .row($(inputBtnRef).parents('tr'))
+                .remove()
+                .draw();
+        }
+   
+       
     }
 </script>
 }
