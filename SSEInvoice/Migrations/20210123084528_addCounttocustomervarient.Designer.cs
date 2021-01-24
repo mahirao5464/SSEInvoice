@@ -3,19 +3,21 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSEInvoice.Data;
 
 namespace SSEInvoice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210123084528_addCounttocustomervarient")]
+    partial class addCounttocustomervarient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.11")
+                .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -337,8 +339,6 @@ namespace SSEInvoice.Migrations
 
                     b.HasIndex("BankDetailId");
 
-                    b.HasIndex("BusinessAddress");
-
                     b.ToTable("BusinessDetails");
                 });
 
@@ -370,23 +370,14 @@ namespace SSEInvoice.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Cgst")
-                        .HasColumnType("float");
-
                     b.Property<double>("Count")
                         .HasColumnType("float");
 
                     b.Property<double>("CustomePrice")
                         .HasColumnType("float");
 
-                    b.Property<bool>("IsCgstOnly")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("QuotationId")
                         .HasColumnType("int");
-
-                    b.Property<double>("Sgst")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
@@ -709,12 +700,6 @@ namespace SSEInvoice.Migrations
                     b.HasOne("SSEInvoice.Models.BankDetail", "BankDetail")
                         .WithMany()
                         .HasForeignKey("BankDetailId");
-
-                    b.HasOne("SSEInvoice.Models.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("BusinessAddress")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SSEInvoice.Models.CustomVarient", b =>

@@ -42,7 +42,14 @@ namespace SSEInvoice.Models
         [ForeignKey("Varient")]
         public int VarientId { get; set; }
         public virtual Varient Varient { get; set; }
+        public double Count { get; set; }
         public double CustomePrice { get; set; }
+        [DataType(DataType.Currency)]
+        public double Cgst { get; set; }
+        [DataType(DataType.Currency)]
+        public double Sgst { get; set; }
+        public bool IsCgstOnly { get; set; }
+
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
 
     }

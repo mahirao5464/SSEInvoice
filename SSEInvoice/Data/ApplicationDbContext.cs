@@ -23,6 +23,7 @@ namespace SSEInvoice.Data
         public DbSet<CustomerVarient> CustomerVarients { get; set; }
         public DbSet<Quotation> Quotations { get; set; }
         public DbSet<BusinessDetails> BusinessDetails { get; set; }
+        public DbSet<SSEInvoice.Models.BankDetail> BankDetail { get; set; }
 
 
     }

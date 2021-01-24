@@ -35,7 +35,10 @@ namespace SSEInvoice.Controllers
             {
                 return BadRequest();
             }
-            return Json( new { BillingAddress = _context.Customers.Include(el => el.PermanentAddress).FirstOrDefault(el => el.CustomerId == CustomerId).PermanentAddress });
+            var BusinessStateCode = _context.BusinessDetails.Include(el => el.Address).FirstOrDefault().Address.StateCode;
+            var customerAdd = _context.Customers.Include(el => el.PermanentAddress).FirstOrDefault(el => el.CustomerId == CustomerId).PermanentAddress;
+
+            return Json( new { BillingAddress = customerAdd, IsOnlyCGST = BusinessStateCode!= customerAdd.StateCode });
         }
 
         // GET: Quotations/Details/5
@@ -70,6 +73,15 @@ namespace SSEInvoice.Controllers
             });
             ViewData["ProductList"] = selectlist;
             return View();
+        }
+        public IActionResult GetUnit(int? VarientId)
+        {
+            if (VarientId == null)
+            {
+                return BadRequest();
+            }
+           var varient = _context.Varients.Include(el => el.Unit).Include(el =>el.Product).FirstOrDefault(el=>el.VarientId == VarientId);
+            return Json(new { VarientDetail = varient});
         }
 
         // POST: Quotations/Create
