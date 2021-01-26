@@ -18,6 +18,7 @@ namespace SSEInvoice.Models
         [Display(Name ="Billing To ")]
         [ForeignKey("Address")]
         public int BillingTo { get; set; }
+        public string BillingAddressString { get; set; }
         public string QuotNumber { get; set; }
         [DataType(DataType.Currency)]
         [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]

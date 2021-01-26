@@ -27,31 +27,12 @@
             <div class="form-group">
                 <input type="hidden" asp-for="BillingTo" />
                 <label for="BillingAddress" class="control-label">BillingAddress</label>
-                <textarea rows="5" type="text" id="BillingAddress" class="form-control" disabled></textarea>
+                <textarea rows="5" type="text" id="BillingAddress" class="form-control" name="BillingAddressString" disabled></textarea>
             </div>
 
-            <div class="form-group">
-                <label asp-for="SubTotal" class="control-label"></label>
-                <input asp-for="SubTotal" class="form-control" />
-                <span asp-validation-for="SubTotal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalTax" class="control-label"></label>
-                <input asp-for="TotalTax" class="form-control" />
-                <span asp-validation-for="TotalTax" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ShippingCharges" class="control-label"></label>
-                <input asp-for="ShippingCharges" class="form-control" />
-                <span asp-validation-for="ShippingCharges" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
+
             <input type="hidden" asp-for="CreatedOn" />
-            
+
 
         </div>
         <div class="col-md-8">
@@ -61,7 +42,7 @@
 
                         <label class="control-label">Select Product to Add</label>
 
-                        <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control" >
+                        <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control">
                             <option>select product</option>
                         </select>
                     </div>
@@ -78,7 +59,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Unit</label>
-                                <input id="UnitName" type="text" class="form-control" placeholder="---" disabled/>
+                                <input id="UnitName" type="text" class="form-control" placeholder="---" disabled />
 
                             </div>
                         </div>
@@ -94,8 +75,8 @@
                 <div class="col-md-12">
                     <div class="card mb-1">
                         <div class="card-body">
-                            <h5 class="card-title">Selected Product Details &nbsp; Custom Price: <input type="number" class="form-control-sm" placeholder="price" id="CustomPrice"/></h5>
-                            
+                            <h5 class="card-title">Selected Product Details &nbsp; Custom Price: <input type="number" class="form-control-sm" placeholder="price" id="CustomPrice" /></h5>
+
                             <div class="row">
                                 <div class="col-md-4 p-1">
                                     <div class="border p-1">
@@ -134,53 +115,79 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
             </div><br />
-            <div class="row">
-                <div class="col-sm-12 border p-1">
-                    <div id="dataTable" style="display: none;">
-                           <table style="width:100%;" class="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Varient Name</th>
-                                    <th>Varient ID</th>
-                                    <th>Count</th>
-                                    <th>Custom Price</th>
-                                    <th>SGST(in %)</th>
-                                    <th>CGST(in %)</th>
-                                    <th>Tax</th>
-                                    <th>Price Including Tax</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                    <div id="dataTableForCgst"  style="display: none;">
-                        <table style="width:100%;" class="dataTableForCgst" >
-                            <thead>
-                                <tr>
-                                    <th>Product Name</th>
-                                    <th>Varient Name</th>
-                                    <th>Varient ID</th>
-                                    <th>Count</th>
-                                    <th>Custom Price</th>
-                                    <th>CGST(in %)</th>
-                                    <th>Tax</th>
-                                    <th>Price Including Tax</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                        </table>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12 border p-1">
+            <div id="dataTable" style="display: none;">
+                <table style="width:100%;" class="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Varient Name</th>
+                            <th>Varient ID</th>
+                            <th>Count</th>
+                            <th>Custom Price</th>
+                            <th>SGST(in %)</th>
+                            <th>CGST(in %)</th>
+                            <th>Tax</th>
+                            <th>Price Including Tax</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div id="dataTableForCgst" style="display: none;">
+                <table style="width:100%;" class="dataTableForCgst">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Varient Name</th>
+                            <th>Varient ID</th>
+                            <th>Count</th>
+                            <th>Custom Price</th>
+                            <th>CGST(in %)</th>
+                            <th>Tax</th>
+                            <th>Price Including Tax</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="col-md-4  float-md-right ">
+                        <div class="form-group">
+                            <label asp-for="SubTotal" class="control-label"></label>
+                            <input asp-for="SubTotal" class="form-control" disabled/>
+                            <span asp-validation-for="SubTotal" class="text-danger" ></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TotalTax" class="control-label"></label>
+                            <input asp-for="TotalTax" class="form-control" disabled/>
+                            <span asp-validation-for="TotalTax" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ShippingCharges" class="control-label"></label>
+                            <input asp-for="ShippingCharges" class="form-control" onkeydown="return enterShippingCharge(event);"/>
+                            <span asp-validation-for="ShippingCharges" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TotalAmount" class="control-label"></label>
+                            <input asp-for="TotalAmount" class="form-control" disabled/>
+                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
             </div>
-
+            
         </div>
-
     </div>
 </form>
 <div>
@@ -305,6 +312,8 @@ Pin Code : ${bAddress.pinCode},
                     CgstAmount + Number(CustomPrice),
                     `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
                 ]).draw(false);
+                
+                
             } else {
                 let CgstAmount = Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
                 let SgstAmount = Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
@@ -325,6 +334,18 @@ Pin Code : ${bAddress.pinCode},
                     `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
                 ]).draw(false);
             }
+            let subtotal = 0;
+            let taxTotal = 0;
+            CustomVarient.forEach(el => {
+                debugger;
+                subtotal += new Number(el.CustomPrice);
+                taxTotal += (parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+               
+            });
+            $("#SubTotal").val(subtotal);
+            $("#TotalTax").val(taxTotal);
+            let totalAmount = $("#TotalAmount").val();
+            $("#TotalAmount").val(Number(totalAmount) + subtotal + taxTotal);
             
            
         } else {
@@ -339,14 +360,40 @@ Pin Code : ${bAddress.pinCode},
                 .row($(inputBtnRef).parents('tr'))
                 .remove()
                 .draw();
+            
         } else {
             dataTable
                 .row($(inputBtnRef).parents('tr'))
                 .remove()
                 .draw();
+            
         }
-   
-       
+        let subtotal = 0;
+        let taxTotal = 0;
+        CustomVarient.forEach(el => {
+            subtotal += new Number(el.CustomPrice);
+            taxTotal += (parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+
+        });
+        $("#SubTotal").val(subtotal);
+        $("#TotalTax").val(taxTotal);
+        let shipCharge = $("#ShippingCharges").val();
+        $("#TotalAmount").val(subtotal + taxTotal + Number(shipCharge));
     }
+    function enterShippingCharge(event) {
+        if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 8 || event.keyCode == 9 ) {
+           
+            return true;
+
+        }
+        return false;
+    }
+    $("#ShippingCharges").on("blur",function () {
+        let shipCharge = $("#ShippingCharges").val();
+        let SubTotal = $("#SubTotal").val();
+        let TotalTax = $("#TotalTax").val();
+        let totalChargeAfter = Number(SubTotal) + Number(TotalTax) + Number(shipCharge);
+        $("#TotalAmount").val(totalChargeAfter);
+    });
 </script>
 }
