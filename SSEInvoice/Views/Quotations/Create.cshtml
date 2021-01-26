@@ -317,13 +317,24 @@ Pin Code : ${bAddress.pinCode},
             } else {
                 let CgstAmount = Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
                 let SgstAmount = Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
+                //CustomVarient.push({
+                //    ProductName,
+                //    VarientName,
+                //    VarientId,
+                //    Count,
+                //    CustomPrice,
+                //    Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst),
+                //    CgstAmount,
+                //    CgstAmount + Number(CustomPrice),
+                //    `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
+                //});
                 CustomVarient.push({
                     "VarientId": VarientId,
                     "Count": Count,
                     "CustomPrice": CustomPrice,
                     "Cgst": CgstAmount,
                     "Sgst": SgstAmount,
-                    "IsOnlyCgst": false
+                    "IsOnlyCgst": true
                 });
                 dataTable.row.add([
                     ProductName,
@@ -331,6 +342,10 @@ Pin Code : ${bAddress.pinCode},
                     VarientId,
                     Count,
                     CustomPrice,
+                    Number(LastVarientResponse.varientDetail.cgst),
+                    Number(LastVarientResponse.varientDetail.sgst),
+                    Number(CgstAmount) + Number(SgstAmount),
+                    Number(CgstAmount) + Number(SgstAmount) + Number(CustomPrice),
                     `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
                 ]).draw(false);
             }
