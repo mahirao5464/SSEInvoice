@@ -41,7 +41,7 @@
                     <div class="form-group ">
 
                         <label class="control-label">Select Product to Add</label>
-
+                         
                         <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control">
                             <option>select product</option>
                         </select>
@@ -292,7 +292,7 @@ Pin Code : ${bAddress.pinCode},
         let CustomPrice = $("#CustomPrice").val();
         if (!isNaN(VarientId) && !isNaN(Count) && !isNaN(CustomPrice) && Count != 0 && CustomPrice > 0 && isAvailable(VarientId)) {
             if (IsOnlyCGST) {
-                let CgstAmount = Number(CustomPrice) * (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)) / 100;
+                let CgstAmount = Number(Count) * (Number(CustomPrice) * (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)) / 100);
                 CustomVarient.push({
                     "VarientId": VarientId,
                     "Count": Count,
@@ -309,25 +309,15 @@ Pin Code : ${bAddress.pinCode},
                     CustomPrice,
                     (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)),
                     CgstAmount,
-                    CgstAmount + Number(CustomPrice),
+                    CgstAmount + (Number(CustomPrice) * Number(Count)),
                     `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
                 ]).draw(false);
                 
                 
             } else {
-                let CgstAmount = Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
-                let SgstAmount = Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
-                //CustomVarient.push({
-                //    ProductName,
-                //    VarientName,
-                //    VarientId,
-                //    Count,
-                //    CustomPrice,
-                //    Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst),
-                //    CgstAmount,
-                //    CgstAmount + Number(CustomPrice),
-                //    `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
-                //});
+                let CgstAmount = Number(Count) * Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
+                let SgstAmount = Number(Count) *  Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
+                
                 CustomVarient.push({
                     "VarientId": VarientId,
                     "Count": Count,
@@ -345,22 +335,21 @@ Pin Code : ${bAddress.pinCode},
                     Number(LastVarientResponse.varientDetail.cgst),
                     Number(LastVarientResponse.varientDetail.sgst),
                     Number(CgstAmount) + Number(SgstAmount),
-                    Number(CgstAmount) + Number(SgstAmount) + Number(CustomPrice),
+                    Number(CgstAmount) + Number(SgstAmount) + Number(Count) *  Number(CustomPrice),
                     `<input type="button" class="btn btn-danger" value="remove" onclick="deleteRow(this,${VarientId})"/>`
                 ]).draw(false);
             }
             let subtotal = 0;
             let taxTotal = 0;
             CustomVarient.forEach(el => {
-                debugger;
-                subtotal += new Number(el.CustomPrice);
-                taxTotal += (parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+                subtotal += Number(el.Count) * Number(el.CustomPrice);
+                taxTotal += Number(el.Cgst) + Number(el.Sgst);//(parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
                
             });
             $("#SubTotal").val(subtotal);
             $("#TotalTax").val(taxTotal);
-            let totalAmount = $("#TotalAmount").val();
-            $("#TotalAmount").val(Number(totalAmount) + subtotal + taxTotal);
+            let ShipCharge = $("#ShippingCharges").val();
+            $("#TotalAmount").val(subtotal + taxTotal + Number(ShipCharge));
             
            
         } else {
@@ -369,7 +358,8 @@ Pin Code : ${bAddress.pinCode},
         
     });
     function deleteRow(inputBtnRef, varId) { 
-        CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1)
+        CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1);
+        console.log(CustomVarient);
         if (IsOnlyCGST) {
             dataTablecgst
                 .row($(inputBtnRef).parents('tr'))
@@ -385,15 +375,18 @@ Pin Code : ${bAddress.pinCode},
         }
         let subtotal = 0;
         let taxTotal = 0;
+        debugger;
         CustomVarient.forEach(el => {
-            subtotal += new Number(el.CustomPrice);
-            taxTotal += (parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+            subtotal += Number(el.Count) * Number(el.CustomPrice);
+            taxTotal += Number(el.Cgst) + Number(el.Sgst);//(parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
 
         });
+        console.log(subtotal);
+        console.log(taxTotal);
         $("#SubTotal").val(subtotal);
         $("#TotalTax").val(taxTotal);
-        let shipCharge = $("#ShippingCharges").val();
-        $("#TotalAmount").val(subtotal + taxTotal + Number(shipCharge));
+        let ShipCharge = $("#ShippingCharges").val();
+        $("#TotalAmount").val(subtotal + taxTotal + Number(ShipCharge));
     }
     function enterShippingCharge(event) {
         if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 8 || event.keyCode == 9 ) {
