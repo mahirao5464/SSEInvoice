@@ -14,25 +14,22 @@ namespace SSEInvoice.Models
         [ForeignKey("Customer")]
         public int CustomerId { get; set; }
         public virtual Customer Customer {get; set;}
-        public ICollection<CustomVarient> CustomVarient { get; set; }
+        public IList<CustomVarient> CustomVarient { get; set; }
         [Display(Name ="Billing To ")]
         [ForeignKey("Address")]
         public int BillingTo { get; set; }
         public string BillingAddressString { get; set; }
         public string QuotNumber { get; set; }
-        [DataType(DataType.Currency)]
-        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        
         public double SubTotal { get; set; }
-        [DataType(DataType.Currency)]
-        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+        
         public double TotalTax { get; set; }
-        [DataType(DataType.Currency)]
-        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+       
         public double ShippingCharges { get; set; }
         [DataType(DataType.Currency)]
         [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double TotalAmount { get; set; }// Total Amount including all the charges subtotal + tax +shippingcharges + other charges if available
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } = new DateTime();
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
 
     }
@@ -45,9 +42,9 @@ namespace SSEInvoice.Models
         public virtual Varient Varient { get; set; }
         public double Count { get; set; }
         public double CustomePrice { get; set; }
-        [DataType(DataType.Currency)]
+        
         public double Cgst { get; set; }
-        [DataType(DataType.Currency)]
+       
         public double Sgst { get; set; }
         public bool IsCgstOnly { get; set; }
 

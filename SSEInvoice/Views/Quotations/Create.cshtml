@@ -12,7 +12,7 @@
 
 <h4>Quotation</h4>
 <hr />
-<form asp-action="Create">
+<form asp-action="Create" id="createForm">
     <div class="row">
 
         <div class="col-md-4">
@@ -20,14 +20,14 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select id="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                <select id="CustomerId" name="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
                     <option>Select Customer</option>
                 </select>
             </div>
             <div class="form-group">
                 <input type="hidden" asp-for="BillingTo" />
                 <label for="BillingAddress" class="control-label">BillingAddress</label>
-                <textarea rows="5" type="text" id="BillingAddress" class="form-control" name="BillingAddressString" disabled></textarea>
+                <textarea rows="5" type="text" id="BillingAddress" class="form-control" name="BillingAddressString" readonly="readonly"></textarea>
             </div>
 
 
@@ -41,7 +41,7 @@
                     <div class="form-group ">
 
                         <label class="control-label">Select Product to Add</label>
-                         
+
                         <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control">
                             <option>select product</option>
                         </select>
@@ -165,38 +165,38 @@
                     <div class="col-md-4  float-md-right ">
                         <div class="form-group">
                             <label asp-for="SubTotal" class="control-label"></label>
-                            <input asp-for="SubTotal" class="form-control" disabled/>
-                            <span asp-validation-for="SubTotal" class="text-danger" ></span>
+                            <input asp-for="SubTotal" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="SubTotal" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="TotalTax" class="control-label"></label>
-                            <input asp-for="TotalTax" class="form-control" disabled/>
+                            <input asp-for="TotalTax" class="form-control" readonly="readonly" />
                             <span asp-validation-for="TotalTax" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="ShippingCharges" class="control-label"></label>
-                            <input asp-for="ShippingCharges" class="form-control" onkeydown="return enterShippingCharge(event);"/>
+                            <input asp-for="ShippingCharges" class="form-control" onkeydown="return enterShippingCharge(event);" />
                             <span asp-validation-for="ShippingCharges" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="TotalAmount" class="control-label"></label>
-                            <input asp-for="TotalAmount" class="form-control" disabled/>
+                            <input asp-for="TotalAmount" class="form-control" readonly="readonly" />
                             <span asp-validation-for="TotalAmount" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
-</form>
-<div>
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+    
+    <div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+        <a asp-action="Index">Back to List</a>
     </div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+</form>
 @section Scripts {
 
     <script src="~/js/select2.min.js"></script>
@@ -402,6 +402,59 @@ Pin Code : ${bAddress.pinCode},
         let TotalTax = $("#TotalTax").val();
         let totalChargeAfter = Number(SubTotal) + Number(TotalTax) + Number(shipCharge);
         $("#TotalAmount").val(totalChargeAfter);
+    });
+
+    function AppendProductArray(FormToSubmit) {
+        //console.log(FormToSubmit);
+       
+        //let formdata = new FormData(FormToSubmit);
+        //console.log(formdata);
+        //var i = 0;
+        //CustomVarient.forEach(el => {
+        //    formdata.append(`CustomVarient[${i}]`, JSON.stringify(el));
+        //    i++;
+        //});
+        
+        //return true;
+
+    }
+    $('#createForm').submit(function (e) {
+        //e.preventDefault();
+        console.log(CustomVarient);
+        for (let i = 0; i < CustomVarient.length; i++) {
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Id`)
+                .attr("value", "0" )
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].VarientId`)
+                .attr("value", CustomVarient[i].VarientId)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Count`)
+                .attr("value", CustomVarient[i].Count)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].CustomePrice`)
+                .attr("value", CustomVarient[i].CustomPrice)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Cgst`)
+                .attr("value", CustomVarient[i].Cgst)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Sgst`)
+                .attr("value", CustomVarient[i].Sgst)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].IsCgstOnly`)
+                .attr("value", CustomVarient[i].IsOnlyCgst)
+                .appendTo(this);
+        }
+        
+
+        this.submit(); // call the submit function on the element rather than 
+        // the jQuery selection to avoid an infinite loop
     });
 </script>
 }

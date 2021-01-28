@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SSEInvoice.Data;
@@ -89,10 +90,12 @@ namespace SSEInvoice.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId,BillingTo,QuotNumber,SubTotal,TotalTax,ShippingCharges,TotalAmount,CreatedOn,UpdatedOn")] Quotation quotation)
+        public async Task<IActionResult> Create([Bind("CustomerId", "CustomVarient", "BillingTo", "BillingAddressString", "ShippingCharges")]   Quotation quotation)
         {
+            
             if (ModelState.IsValid)
             {
+                quotation.CreatedOn = DateTime.Now;
                 _context.Add(quotation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -108,7 +111,6 @@ namespace SSEInvoice.Controllers
             {
                 return NotFound();
             }
-
             var quotation = await _context.Quotations.FindAsync(id);
             if (quotation == null)
             {
