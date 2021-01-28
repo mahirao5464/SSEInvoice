@@ -26,8 +26,6 @@ namespace SSEInvoice.Models
         public double TotalTax { get; set; }
        
         public double ShippingCharges { get; set; }
-        [DataType(DataType.Currency)]
-        [DisplayFormat(NullDisplayText = "", ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public double TotalAmount { get; set; }// Total Amount including all the charges subtotal + tax +shippingcharges + other charges if available
         public DateTime CreatedOn { get; set; } = new DateTime();
         public DateTime UpdatedOn { get; set; } = DateTime.Now;

@@ -113,7 +113,7 @@ namespace SSEInvoice.Controllers
             {
                 return NotFound();
             }
-            var quotation = await _context.Quotations.FindAsync(id);
+            var quotation = await _context.Quotations.Include(el=>el.CustomVarient).FirstOrDefaultAsync(el=>el.Id == id);
             if (quotation == null)
             {
                 return NotFound();
