@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SSEInvoice.Data;
 using SSEInvoice.Models;
+using SSEInvoice.Utilies;
 
 namespace SSEInvoice.Controllers
 {
@@ -95,6 +96,7 @@ namespace SSEInvoice.Controllers
             
             if (ModelState.IsValid)
             {
+                Utility.CalculateAmountAndTax(quotation);
                 quotation.CreatedOn = DateTime.Now;
                 _context.Add(quotation);
                 await _context.SaveChangesAsync();
