@@ -24,9 +24,10 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CustomerId" />
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select id="CustomerId" name="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                <select class="form-control" asp-items="ViewBag.CustomerId" readonly="readonly" onclick="return false">
                     <option>Select Customer</option>
                 </select>
             </div>
@@ -599,6 +600,10 @@ Pin Code : ${bAddress.pinCode},
             $("<input />").attr("type", "hidden")
                 .attr("name", `CustomVarient[${i}].Id`)
                 .attr("value", CustomVarient[i].Id )
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].QuotationId`)
+                .attr("value", $("#Id").val())
                 .appendTo(this);
             $("<input />").attr("type", "hidden")
                 .attr("name", `CustomVarient[${i}].VarientId`)

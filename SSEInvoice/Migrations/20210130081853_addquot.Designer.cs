@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SSEInvoice.Data;
 
 namespace SSEInvoice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210130081853_addquot")]
+    partial class addquot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -400,7 +402,7 @@ namespace SSEInvoice.Migrations
 
                     b.HasIndex("VarientId");
 
-                    b.ToTable("CustomVarients");
+                    b.ToTable("CustomVarient");
                 });
 
             modelBuilder.Entity("SSEInvoice.Models.Customer", b =>

@@ -24,6 +24,7 @@ namespace SSEInvoice.Data
         public DbSet<Quotation> Quotations { get; set; }
         public DbSet<BusinessDetails> BusinessDetails { get; set; }
         public DbSet<BankDetail> BankDetail { get; set; }
-       
+        public DbSet<CustomVarient> CustomVarients { get; set; }
+
     }
 }

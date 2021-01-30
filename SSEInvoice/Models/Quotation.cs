@@ -34,10 +34,14 @@ namespace SSEInvoice.Models
     }
     public class CustomVarient
     {
+
         [Key]
         public int Id { get; set; }
         [ForeignKey("Varient")]
         public int VarientId { get; set; }
+        [ForeignKey("Quotation")]
+        public int QuotationId { get; set; }
+        public virtual Quotation Quotation { get; set; }
         public virtual Varient Varient { get; set; }
         public double Count { get; set; }
         public double CustomePrice { get; set; }

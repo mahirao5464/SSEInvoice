@@ -186,11 +186,17 @@ namespace SSEInvoice.Controllers
             {
                 try
                 {
-                    var CustumVarients = _context.Quotations.Include(el => el.CustomVarient).FirstOrDefault(el => el.Id == id).CustomVarient;
-                    var custVarients = CustumVarients.Select(el=>el.Id).Except(quotation.CustomVarient.Select(el=>el.Id));
-
-                    _context.Update(quotation);
+                    var qcust = quotation.CustomVarient.Select(el => el.Id);
+                    var toRemove = _context.Quotations.AsNoTracking().Include(el => el.CustomVarient).FirstOrDefault(el => el.Id == quotation.Id).CustomVarient?.Where(el => !qcust.Contains(el.Id)).Select(el=>el.Id); 
+                   _context.Update(quotation);
+                   
+                    if (toRemove != null)
+                    {
+                        var toRemoveAgain = _context.CustomVarients.Where(el=> toRemove.Contains(el.Id));
+                        _context.RemoveRange(toRemoveAgain);
+                    }
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
