@@ -19,6 +19,7 @@ namespace SSEInvoice.Models
         [ForeignKey("Address")]
         public int BillingTo { get; set; }
         public string BillingAddressString { get; set; }
+
         public string QuotNumber { get; set; }
         
         public double SubTotal { get; set; }
@@ -27,7 +28,7 @@ namespace SSEInvoice.Models
        
         public double ShippingCharges { get; set; }
         public double TotalAmount { get; set; }// Total Amount including all the charges subtotal + tax +shippingcharges + other charges if available
-        public DateTime CreatedOn { get; set; } = new DateTime();
+        public DateTime CreatedOn { get; set; } 
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
 
     }

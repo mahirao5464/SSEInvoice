@@ -3,73 +3,632 @@
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ProductList = ViewBag.ProductList;
+
+    Func<double, double, double> add = delegate (double x, double y)
+    {
+        return x + y;
+    };
 }
 
+<link href="~/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="~/css/datatables.min.css" />
 <h1>Edit</h1>
 
 <h4>Quotation</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<form asp-action="Edit" id="createForm">
+    <div class="row">
+
+        <div class="col-md-4">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
+                <select id="CustomerId" name="CustomerId" class="form-control" asp-items="ViewBag.CustomerId">
+                    <option>Select Customer</option>
+                </select>
             </div>
             <div class="form-group">
-                <label asp-for="BillingTo" class="control-label"></label>
-                <input asp-for="BillingTo" class="form-control" />
-                <span asp-validation-for="BillingTo" class="text-danger"></span>
+                <input type="hidden" asp-for="BillingTo" />
+                <label for="BillingAddress" class="control-label">BillingAddress</label>
+                <textarea rows="5" type="text" id="BillingAddress" class="form-control" name="BillingAddressString" readonly="readonly">@Model.BillingAddressString</textarea>
             </div>
-            <div class="form-group">
-                <label asp-for="QuotNumber" class="control-label"></label>
-                <input asp-for="QuotNumber" class="form-control" />
-                <span asp-validation-for="QuotNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SubTotal" class="control-label"></label>
-                <input asp-for="SubTotal" class="form-control" />
-                <span asp-validation-for="SubTotal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalTax" class="control-label"></label>
-                <input asp-for="TotalTax" class="form-control" />
-                <span asp-validation-for="TotalTax" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ShippingCharges" class="control-label"></label>
-                <input asp-for="ShippingCharges" class="form-control" />
-                <span asp-validation-for="ShippingCharges" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAmount" class="control-label"></label>
-                <input asp-for="TotalAmount" class="form-control" />
-                <span asp-validation-for="TotalAmount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedOn" class="control-label"></label>
-                <input asp-for="CreatedOn" class="form-control" />
-                <span asp-validation-for="CreatedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedOn" class="control-label"></label>
-                <input asp-for="UpdatedOn" class="form-control" />
-                <span asp-validation-for="UpdatedOn" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+
+
+            <input type="hidden" asp-for="CreatedOn" />
+
+
+        </div>
+        <div class="col-md-8">
+            <div class="row border">
+                <div class="col-md-6 ">
+                    <div class="form-group ">
+
+                        <label class="control-label">Select Product to Add</label>
+
+                        <select asp-items="ViewBag.ProductList" onchange="selectProduct(this.value)" id="selectedProduct" class="form-control">
+                            <option>select product</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Count</label>
+                                <input type="number" id="Count" class="form-control" placeholder="Quantity" />
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Unit</label>
+                                <input id="UnitName" type="text" class="form-control" placeholder="---" disabled />
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Click </label><br />
+                                <input type="button" class="btn btn-primary" id="addToQuote" value="ADD" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card mb-1">
+                        <div class="card-body">
+                            <h5 class="card-title">Selected Product Details &nbsp; Custom Price: <input type="number" class="form-control-sm" placeholder="price" id="CustomPrice" /></h5>
+
+                            <div class="row">
+                                <div class="col-md-4 p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Name</h6>
+                                        <span class="card-text" id="ProductNameBox"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Cost</h6>
+                                        <span class="card-text" id="ProductPriceBox"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product Description</h6>
+                                        <span class="card-text" id="ProductDescBox"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">CGST</h6>
+                                        <span class="card-text" id="ProductcgstBox"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">SGST</h6>
+                                        <span class="card-text" id="ProductsgstBox"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4  p-1">
+                                    <div class="border p-1">
+                                        <h6 class="card-subtitle mb-2 text-muted">Product HSN</h6>
+                                        <span class="card-text" id="ProducthsnBox"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+        </div>
+
     </div>
-</div>
+    <div class="row">
+        <div class="col-sm-12 border p-1">
+            @if (Model.CustomVarient[0]?.IsCgstOnly != true)
+            {
+                <div id="dataTable">
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+                    <table style="width:100%;" class="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Varient Name</th>
+                                <th>Varient ID</th>
+                                <th>Count</th>
+                                <th>Custom Price</th>
+                                <th>SGST(in %)</th>
+                                <th>CGST(in %)</th>
+                                <th>Tax</th>
+                                <th>Price Including Tax</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (byte i = 0; i < Model.CustomVarient.Count(); i++)
+                            {
+                                var varient = Model.CustomVarient[i];
+                                <tr>
+                                    <td>
+                                        @varient.Varient?.Product.ProductName
+                                    </td>
+                                    <td>
+                                        @varient.Varient?.VarientName
+                                    </td>
+                                    <td>
+                                        @varient.Varient?.VarientId
+                                    </td>
+                                    <td>
+                                        @varient.Count
+                                    </td>
+                                    <td>
+                                        @varient.CustomePrice
+                                    </td>
+                                    <td>
+                                        @varient.Sgst
+                                    </td>
+                                    <td>
+                                        @varient.Cgst
+                                    </td>
+                                    <td>
+                                        @add(varient.Sgst,varient.Cgst)
+                                    </td>
+                                    <td>
+                                        @add(add(varient.Sgst, varient.Cgst), varient.CustomePrice)
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-outline-danger" title="Remove Product" onclick="deleteRow(this, '@varient.VarientId')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div id="dataTableForCgst" style="display:none">
+                    <table style="width:100%;" class="dataTableForCgst">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Varient Name</th>
+                                <th>Varient ID</th>
+                                <th>Count</th>
+                                <th>Custom Price</th>
+                                <th>CGST(in %)</th>
+                                <th>Tax</th>
+                                <th>Price Including Tax</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
 
+
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div id="dataTable" style="display:none">
+
+                    <table style="width:100%;" class="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Varient Name</th>
+                                <th>Varient ID</th>
+                                <th>Count</th>
+                                <th>Custom Price</th>
+                                <th>SGST(in %)</th>
+                                <th>CGST(in %)</th>
+                                <th>Tax</th>
+                                <th>Price Including Tax</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        
+                    </table>
+                </div>
+                <div id="dataTableForCgst">
+                    <table style="width:100%;" class="dataTableForCgst">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Varient Name</th>
+                                <th>Varient ID</th>
+                                <th>Count</th>
+                                <th>Custom Price</th>
+                                <th>CGST(in %)</th>
+                                <th>Tax</th>
+                                <th>Price Including Tax</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (byte i = 0; i < Model.CustomVarient.Count(); i++)
+                            {
+                                var varient = Model.CustomVarient[i];
+                                <tr>
+                                    <td>
+                                        @varient.Varient?.Product.ProductName
+                                    </td>
+                                    <td>
+                                        @varient.Varient?.VarientName
+                                    </td>
+                                    <td>
+                                        @varient.Varient?.VarientId
+                                    </td>
+                                    <td>
+                                        @varient.Count
+                                    </td>
+                                    <td>
+                                        @varient.CustomePrice
+                                    </td>
+                                    <td>
+                                        @varient.Cgst
+                                    </td>
+                                    <td>
+                                        @add(varient.Sgst,varient.Cgst)
+                                    </td>
+                                    <td>
+                                        @add(add(varient.Sgst, varient.Cgst),varient.CustomePrice)
+                                    </td>
+                                    <td>
+                                        
+                                        <button type="button" class="btn btn-outline-danger" title="Remove Product"  onclick="deleteRow(this, '@varient.VarientId')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+            <hr />
+            <div class="row ">
+                <div class="col-md-12">
+                    <div class="col-md-4  float-md-right ">
+                        <div class="form-group">
+                            <label asp-for="SubTotal" class="control-label"></label>
+                            <input asp-for="SubTotal" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="SubTotal" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TotalTax" class="control-label"></label>
+                            <input asp-for="TotalTax" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="TotalTax" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ShippingCharges" class="control-label"></label>
+                            <input asp-for="ShippingCharges" class="form-control" onkeydown="return enterShippingCharge(event);" />
+                            <span asp-validation-for="ShippingCharges" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TotalAmount" class="control-label"></label>
+                            <input asp-for="TotalAmount" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div>
+    </div>
+    <div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</form>
 @section Scripts {
+
+    <script src="~/js/select2.min.js"></script>
+
+    <script type="text/javascript" src="~/js/datatables.min.js"></script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+
+    var IsOnlyCGST = '@Html.Raw(Model.CustomVarient[0]?.IsCgstOnly)';
+    $("#selectedProduct").select2();
+    var dataTable = $('.dataTable').DataTable();
+    var dataTablecgst = $(".dataTableForCgst").DataTable();
+    $('#CustomerId').change(function () {
+        dataTable.clear();
+        dataTablecgst.clear();
+        CustomVarient = [];
+    var selectedValue = $(this).val();
+    if (selectedValue!=0)
+    $.ajax({
+    url: '@Url.Action("FindBillingAddress", "Quotations")',
+    type: "Get",
+    data: { CustomerId: selectedValue },
+    success: function (res) {
+        console.log(res);
+        $("#BillingTo").empty();
+        $("#BillingAddress").empty();
+        if (res.billingAddress != null) {
+            let bAddress = res.billingAddress;
+            $("#BillingTo").val(bAddress.id);
+            $("#BillingAddress").val(
+                `${bAddress.line1},
+${bAddress.line2},
+${bAddress.city},
+${bAddress.state},
+Pin Code : ${bAddress.pinCode},
+                `);
+            IsOnlyCGST = res.isOnlyCGST;
+            if (res.isOnlyCGST) {
+                $("#dataTableForCgst").show();
+                $("#dataTable").hide();
+            } else {
+                $("#dataTableForCgst").hide();
+                $("#dataTable").show();
+            }
+        }
+    },
+    error: function (err) {
+    console.log(err);
+    }
+    });
+    });
+
+
+
+    var LastVarientResponse;
+    function selectProduct(val) {
+        $("#UnitName").val("");
+        console.log(val);
+        if (val !="select product")
+          $.ajax({
+    url: '@Url.Action("GetUnit", "Quotations")',
+    type: "Get",
+    data: { VarientId: val },
+    success: function (res) {
+        console.log(res);
+        LastVarientResponse = res;
+        $("#UnitName").empty();
+        $("#UnitName").val(res.varientDetail.unit.unitName);
+        $("#ProductNameBox").html(`<strong>${res.varientDetail.product.productName}</strong>`);
+        $("#ProductPriceBox").html(`<strong>${res.varientDetail.price}</strong>`);
+        $("#ProductDescBox").html(`<strong>${res.varientDetail.product.description}</strong>`);
+        $("#ProductcgstBox").html(`<strong>${res.varientDetail.cgst}</strong>`);
+        $("#ProductsgstBox").html(`<strong>${res.varientDetail.sgst}</strong>`);
+        $("#ProducthsnBox").html(`<strong>${res.varientDetail.product.productCode}</strong>`);
+
+    },
+    error: function (err) {
+    console.log(err);
+    }
+    });
+    }
+    var CustomVarient = new Array();
+        $.ajax({
+    url: '@Url.Action("LoadCustomVarient", "Quotations")',
+    type: "Get",
+    data: { Id: '@Html.Raw(Model.Id)' },
+    success: function (res) {
+        console.log(res);
+        res.forEach(el => {
+            CustomVarient.push({
+                "Id": el.id,
+                "VarientId": el.varientId,
+                "Count": el.count,
+                "CustomPrice": el.customePrice,
+                "Cgst": el.cgst,
+                "Sgst": el.sgst,
+                "IsOnlyCgst": el.isCgstOnly
+            });
+        })
+        console.log(CustomVarient);
+    },
+    error: function (err) {
+    console.log(err);
+    }
+    });
+    function isAvailable(varid) {
+        return CustomVarient.find(el => el.VarientId == varid) == undefined;
+    }
+    //add row to table
+    $('#addToQuote').on('click', function () {
+        debugger;
+        let VarientId = $("#selectedProduct").val();
+        let VarientName = $("#selectedProduct option:selected").text();
+        let ProductName = $("#ProductNameBox").html();
+        let Count = $("#Count").val();
+        let CustomPrice = $("#CustomPrice").val();
+        if (!isNaN(VarientId) && !isNaN(Count) && !isNaN(CustomPrice) && Count != 0 && CustomPrice > 0 && isAvailable(VarientId)) {
+            if (IsOnlyCGST) {
+                let CgstAmount = Number(Count) * (Number(CustomPrice) * (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)) / 100);
+                CustomVarient.push({
+                    "Id": 0,
+                    "VarientId": VarientId,
+                    "Count": Count,
+                    "CustomPrice": CustomPrice,
+                    "Cgst": CgstAmount,
+                    "Sgst": 0,
+                    "IsOnlyCgst": true
+                });
+                dataTablecgst.row.add([
+                    ProductName,
+                    VarientName,
+                    VarientId,
+                    Count,
+                    CustomPrice,
+                    (Number(LastVarientResponse.varientDetail.cgst) + Number(LastVarientResponse.varientDetail.sgst)),
+                    CgstAmount,
+                    CgstAmount + (Number(CustomPrice) * Number(Count)),
+                    `<button type="button" class="btn btn-outline-danger" title="Remove Product"  onclick="deleteRow(this,${VarientId})">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                            </svg>
+                                        </button>`
+                ]).draw(false);
+
+
+            } else {
+                let CgstAmount = Number(Count) * Number(CustomPrice) * Number(LastVarientResponse.varientDetail.cgst)  / 100;
+                let SgstAmount = Number(Count) *  Number(CustomPrice) *  Number(LastVarientResponse.varientDetail.sgst) / 100;
+
+                CustomVarient.push({
+                    "Id":0,
+                    "VarientId": VarientId,
+                    "Count": Count,
+                    "CustomPrice": CustomPrice,
+                    "Cgst": CgstAmount,
+                    "Sgst": SgstAmount,
+                    "IsOnlyCgst": true
+                });
+                dataTable.row.add([
+                    ProductName,
+                    VarientName,
+                    VarientId,
+                    Count,
+                    CustomPrice,
+                    Number(LastVarientResponse.varientDetail.cgst),
+                    Number(LastVarientResponse.varientDetail.sgst),
+                    Number(CgstAmount) + Number(SgstAmount),
+                    Number(CgstAmount) + Number(SgstAmount) + Number(Count) *  Number(CustomPrice),
+                    `<button type="button" class="btn btn-outline-danger" title="Remove Product"  onclick="deleteRow(this,${VarientId})">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                            </svg>`
+                ]).draw(false);
+            }
+            let subtotal = 0;
+            let taxTotal = 0;
+            CustomVarient.forEach(el => {
+                subtotal += Number(el.Count) * Number(el.CustomPrice);
+                taxTotal += Number(el.Cgst) + Number(el.Sgst);//(parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+
+            });
+            $("#SubTotal").val(subtotal);
+            $("#TotalTax").val(taxTotal);
+            let ShipCharge = $("#ShippingCharges").val();
+            $("#TotalAmount").val(subtotal + taxTotal + Number(ShipCharge));
+
+
+        } else {
+            alert("fill all fields ");
+        }
+
+    });
+    function deleteRow(inputBtnRef, varId) {
+        CustomVarient.splice(CustomVarient.indexOf(CustomVarient.find(el => el.VarientId == varId)), 1);
+        console.log(CustomVarient);
+        if (IsOnlyCGST) {
+            dataTablecgst
+                .row($(inputBtnRef).parents('tr'))
+                .remove()
+                .draw();
+
+        } else {
+            dataTable
+                .row($(inputBtnRef).parents('tr'))
+                .remove()
+                .draw();
+
+        }
+        let subtotal = 0;
+        let taxTotal = 0;
+        CustomVarient.forEach(el => {
+            subtotal += Number(el.Count) * Number(el.CustomPrice);
+            taxTotal += Number(el.Cgst) + Number(el.Sgst);//(parseFloat(el.CustomPrice) * (el.Cgst + el.Sgst) / 100);
+
+        });
+        console.log(subtotal);
+        console.log(taxTotal);
+        $("#SubTotal").val(subtotal);
+        $("#TotalTax").val(taxTotal);
+        let ShipCharge = $("#ShippingCharges").val();
+        $("#TotalAmount").val(subtotal + taxTotal + Number(ShipCharge));
+    }
+    function enterShippingCharge(event) {
+        if ((event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode == 8 || event.keyCode == 9 ) {
+
+            return true;
+
+        }
+        return false;
+    }
+    $("#ShippingCharges").on("blur",function () {
+        let shipCharge = $("#ShippingCharges").val();
+        let SubTotal = $("#SubTotal").val();
+        let TotalTax = $("#TotalTax").val();
+        let totalChargeAfter = Number(SubTotal) + Number(TotalTax) + Number(shipCharge);
+        $("#TotalAmount").val(totalChargeAfter);
+    });
+
+    function AppendProductArray(FormToSubmit) {
+        //console.log(FormToSubmit);
+
+        //let formdata = new FormData(FormToSubmit);
+        //console.log(formdata);
+        //var i = 0;
+        //CustomVarient.forEach(el => {
+        //    formdata.append(`CustomVarient[${i}]`, JSON.stringify(el));
+        //    i++;
+        //});
+
+        //return true;
+
+    }
+    $('#createForm').submit(function (e) {
+        //e.preventDefault();
+        console.log(CustomVarient);
+        for (let i = 0; i < CustomVarient.length; i++) {
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Id`)
+                .attr("value", CustomVarient[i].Id )
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].VarientId`)
+                .attr("value", CustomVarient[i].VarientId)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Count`)
+                .attr("value", CustomVarient[i].Count)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].CustomePrice`)
+                .attr("value", CustomVarient[i].CustomPrice)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Cgst`)
+                .attr("value", CustomVarient[i].Cgst)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].Sgst`)
+                .attr("value", CustomVarient[i].Sgst)
+                .appendTo(this);
+            $("<input />").attr("type", "hidden")
+                .attr("name", `CustomVarient[${i}].IsCgstOnly`)
+                .attr("value", CustomVarient[i].IsOnlyCgst)
+                .appendTo(this);
+        }
+
+
+        this.submit(); // call the submit function on the element rather than
+        // the jQuery selection to avoid an infinite loop
+    });
+</script>
 }

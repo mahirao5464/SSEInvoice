@@ -99,7 +99,8 @@ namespace SSEInvoice.Controllers
                 Utility.CalculateAmountAndTax(quotation);
                 quotation.CreatedOn = DateTime.Now;
                 _context.Add(quotation);
-                await _context.SaveChangesAsync();
+                int id = await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", quotation.CustomerId);
@@ -113,21 +114,68 @@ namespace SSEInvoice.Controllers
             {
                 return NotFound();
             }
-            var quotation = await _context.Quotations.Include(el=>el.CustomVarient).FirstOrDefaultAsync(el=>el.Id == id);
+            var quotation = await _context.Quotations.Include(el=>el.CustomVarient).ThenInclude(el=>el.Varient).ThenInclude(el=>el.Product).FirstOrDefaultAsync(el=>el.Id == id);
             if (quotation == null)
             {
                 return NotFound();
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerName", quotation.CustomerId);
+            var selectListGroup = _context.Product.Select(el => new SelectListGroup() { Name = el.ProductName });
+            var selectlist = _context.Varients.Include(el => el.Product).Select(el => new SelectListItem()
+            {
+                Text = el.VarientName,
+                Value = el.VarientId.ToString(),
+                Group = selectListGroup.FirstOrDefault(elg => elg.Name == el.Product.ProductName)
+            });
+            ViewData["ProductList"] = selectlist;
             return View(quotation);
         }
+
+        public ActionResult LoadCustomVarient(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // logic
+            // Edit you don't need to serialize it just return the object
+            Quotation quotation = _context.Quotations.Include(el => el.CustomVarient).ThenInclude(el => el.Varient).ThenInclude(el => el.Product).FirstOrDefault(el => el.Id == id);
+            //push({
+            //    "VarientId": VarientId,
+            //        "Count": Count,
+            //        "CustomPrice": CustomPrice,
+            //        "Cgst": CgstAmount,
+            //        "Sgst": SgstAmount,
+            //        "IsOnlyCgst": true
+            //    });
+
+            IList<CustomVarient> varients = new List<CustomVarient>();
+            foreach(var cVarient in quotation.CustomVarient)
+            {
+                var tempVarient = new CustomVarient()
+                {
+                    Id = cVarient.Id,
+                    Cgst = cVarient.Cgst,
+                    Count = cVarient.Count,
+                    CustomePrice = cVarient.CustomePrice,
+                    IsCgstOnly = cVarient.IsCgstOnly,
+                    Sgst = cVarient.Sgst,
+                    VarientId = cVarient.VarientId
+                };
+                varients.Add(tempVarient);
+                tempVarient = null;
+
+            }
+            return Json(varients);
+        }
+
 
         // POST: Quotations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,BillingTo,QuotNumber,SubTotal,TotalTax,ShippingCharges,TotalAmount,CreatedOn,UpdatedOn")] Quotation quotation)
+        public async Task<IActionResult> Edit(int id, Quotation quotation)
         {
             if (id != quotation.Id)
             {
@@ -138,6 +186,9 @@ namespace SSEInvoice.Controllers
             {
                 try
                 {
+                    var CustumVarients = _context.Quotations.Include(el => el.CustomVarient).FirstOrDefault(el => el.Id == id).CustomVarient;
+                    var custVarients = CustumVarients.Select(el=>el.Id).Except(quotation.CustomVarient.Select(el=>el.Id));
+
                     _context.Update(quotation);
                     await _context.SaveChangesAsync();
                 }
