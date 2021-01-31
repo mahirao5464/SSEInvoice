@@ -19,6 +19,7 @@ namespace SSEInvoice.Models
         public BankDetail BankDetail { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
+        
 
     }
     public class BankDetail 

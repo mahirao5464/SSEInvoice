@@ -6,6 +6,11 @@
     <title>@ViewData["Title"] - SSEInvoice</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    
+    <link href="~/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.23/r-2.2.7/datatables.min.css" />
+
+    
 </head>
 <body>
     <header>
@@ -43,7 +48,19 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.23/r-2.2.7/datatables.min.js"></script>
+    <script src="~/js/select2.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
+    <script>
+        $(window).on('load', function () {
+
+            var listTable = $(".listTable").DataTable(
+                {
+                    responsive: true
+                }
+            );
+        });
+    </script>
 </body>
 </html>

@@ -6,8 +6,8 @@
     var ProductList = ViewBag.ProductList;
 }
 
-    <link href="~/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="~/css/datatables.min.css" />
+    
+    
 <h1>Create</h1>
 
 <h4>Quotation</h4>
@@ -198,17 +198,12 @@
     </div>
 </form>
 @section Scripts {
-
-    <script src="~/js/select2.min.js"></script>
-
-    <script type="text/javascript" src="~/js/datatables.min.js"></script>
-
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 <script>
     var IsOnlyCGST = false;
     $("#selectedProduct").select2();
-    var dataTable = $('.dataTable').DataTable();
-    var dataTablecgst = $(".dataTableForCgst").DataTable();
+    var dataTable = $('.dataTable').DataTable({ responsive: true });
+    var dataTablecgst = $(".dataTableForCgst").DataTable({ responsive: true });
     $('#CustomerId').change(function () {
         dataTable.clear();
         dataTablecgst.clear();
@@ -328,7 +323,7 @@ Pin Code : ${bAddress.pinCode},
                     "CustomPrice": CustomPrice,
                     "Cgst": CgstAmount,
                     "Sgst": SgstAmount,
-                    "IsOnlyCgst": true
+                    "IsOnlyCgst": false
                 });
                 dataTable.row.add([
                     ProductName,

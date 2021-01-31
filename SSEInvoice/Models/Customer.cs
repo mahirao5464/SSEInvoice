@@ -49,5 +49,10 @@ namespace SSEInvoice.Models
         [Required]
         [DataType(DataType.PostalCode)]
         public int PINCode { get; set; }
+        public string AddressToString()
+        {
+            return $" {this.Line1 }<br/>{this.Line2 }<br/>{this.City}, {this.State} {this.PINCode}";
+
+        }
     }
 }

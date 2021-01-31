@@ -10,7 +10,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table listTable" >
     <thead>
         <tr>
             <th>
@@ -50,10 +50,10 @@
                 @Html.DisplayFor(modelItem => item.Customer.ContactPersonName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BillingTo)
+                @Html.DisplayFor(modelItem => item.BillingAddressString)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.QuotNumber)
+                @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SubTotal)

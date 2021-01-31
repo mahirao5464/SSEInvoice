@@ -1,0 +1,337 @@
+﻿@model SSEInvoice.Models.ViewModels.QuotViewModels
+
+@{
+    ViewData["Title"] = "Quotation : Q" + Model.Quotation.Id;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row" id="PrintableArea">
+    <div class="col-sm-12">
+
+        <div class="container border" >
+            <div class="row ">
+                <div class="col-sm-2">
+                    <a class="navbar-brand" href="#"><img style="height: 100px;" src="~/images/shyaml.jpg"></a>
+                </div>
+                <div class="col-sm-7">
+                    <h3>Shree Shyam Enterprice</h3>
+                    <address>
+                        @Html.Raw(Model.BusinessDetails.FirstOrDefault()?.Address?.AddressToString())
+                    </address>
+                </div>
+                <div class="col-sm-3 text-center">
+                    <p>
+                        <h3>Quotation</h3>
+                        Number: <strong><span>Q</span>@Model.Quotation.Id</strong>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 border">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>Quotation Date</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            : @Model.Quotation.UpdatedOn.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>Terms</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            : Due On Reciept
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>Due Date</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            : Valid Up To 7 days
+                        </div>
+                    </div>
+                    @*<div class="row">
+                            <div class="col-sm-6">
+                                <strong>PO Number</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                : 3210104
+                            </div>
+                        </div>*@
+                    @*<div class="row">
+                            <div class="col-sm-6">
+                                <strong>E-way Bill</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                : 181000001348
+                            </div>
+                        </div>*@
+                </div>
+                <div class="col-sm-6 border">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>Bill To</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            <address>
+                                : @Html.Raw(Model.Quotation.Customer.PermanentAddress.AddressToString())
+                            </address>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <strong>GST Number</strong>
+                        </div>
+                        <div class="col-sm-6">
+                            : @Html.Raw(Model.Quotation.Customer.GSTNumber);
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="row bg-secondary">
+                    <div class="col-6 border-right">
+                        <strong>Bill To</strong>
+                    </div>
+                    <div class="col-6">
+                        <strong>Ship To</strong>
+                    </div>
+                </div>*@
+            @*<div class="row ">
+                    <div class="col-6 border-right pt-1">
+                        <strong>Client Name </strong>
+                        <address>
+                            Plot No 600 1st Floor<br>
+                            Shreet No - 2, Bhawani Enclave, Basai Road<br>
+                            Gurgaon, Haryana 122414<br>
+                        </address>
+                        <p>GSTNUMBER HERE</p>
+                    </div>
+                    <div class="col-6 pt-1">
+                        <address>
+                            Plot No 600 1st Floor<br>
+                            Shreet No - 2, Bhawani Enclave, Basai Road<br>
+                            Gurgaon, Haryana 122414<br>
+                        </address>
+                    </div>
+                </div>*@
+            <div class="row border-top pt-3">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-6">
+                            Dear Madam/Sir,
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-10">
+                            We are please to provide our quotation for following goods:
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    @if (Model.Quotation.CustomVarient.FirstOrDefault().IsCgstOnly)
+                    {
+                        <table border="1" style="width:inherit">
+                            <thead class="text-center bg-secondary bg-light">
+                                <tr></tr>
+                                <tr>
+                                    <th rowspan="2" style="width:3%">Sr. No.</th>
+                                    <th rowspan="2" style="width:37%">Description</th>
+                                    <th rowspan="2" style="width:5%">Qty</th>
+                                    <th rowspan="2" style="width:10%">Rate</th>
+                                    <th colspan="2">IGST</th>
+                                    <th rowspan="2">Amount</th>
+                                </tr>
+                                <tr>
+                                    <th style="width:3%">%</th>
+                                    <th style="width:10%">amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
+                                {
+                                    var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var igst = varient.Varient.CGST + varient.Varient.SGST;
+                                    var igstAmount = varient.CustomePrice * igst / 100; var totalAmount = varient.CustomePrice + igstAmount;
+                                    <tr>
+                                        <td>
+                                            @SrNo
+                                        </td>
+                                        <td>
+                                            <strong>@varient.Varient?.Product.ProductName</strong> <br />
+                                            &nbsp;&nbsp;&nbsp;&nbsp;@varient.Varient?.VarientName
+                                        </td>
+                                        <td class="text-center">
+                                            @varient.Count
+                                        </td>
+                                        <td class="text-center">
+                                            @varient.CustomePrice
+                                        </td>
+                                        <td class="text-center">
+                                            @igst
+                                        </td>
+                                        <td class="text-center">
+                                            @igstAmount
+                                        </td>
+                                        <td class="text-center">
+                                            @totalAmount
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" class="text-right pr-3">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst)
+                                    </td>
+                                    <td class="text-center">
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.CustomePrice)
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    }
+                    else
+                    {
+                        <table border="1" style="width:inherit">
+                            <thead class="text-center bg-secondary bg-light">
+                                <tr></tr>
+                                <tr>
+                                    <th rowspan="2" style="width:3%">Sr. No.</th>
+                                    <th rowspan="2" style="width:37%">Description</th>
+                                    <th rowspan="2" style="width:5%">Qty</th>
+                                    <th rowspan="2" style="width:10%">rate</th>
+                                    <th colspan="2">cgst</th>
+                                    <th colspan="2">sgst</th>
+                                    <th rowspan="2">Amount</th>
+                                </tr>
+                                <tr>
+                                    <th style="width:3%">%</th>
+                                    <th style="width:10%">amount</th>
+                                    <th style="width:3%">%</th>
+                                    <th style="width:10%">amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
+                                {
+                                    var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var cgst = varient.Varient.CGST; var sgst = varient.Varient.SGST;
+                                    var cgstAmount = varient.CustomePrice * cgst / 100; var sgstAmount = varient.CustomePrice * sgst / 100; var totalAmount = varient.CustomePrice + cgstAmount + sgstAmount;
+
+                                    <tr>
+                                        <td>
+                                            @SrNo
+                                        </td>
+                                        <td>
+                                            <strong>@varient.Varient?.Product.ProductName</strong> <br />
+                                            &nbsp;&nbsp;&nbsp;&nbsp;@varient.Varient?.VarientName
+                                        </td>
+                                        <td class="text-center">
+                                            @varient.Count
+                                        </td>
+                                        <td class="text-center">
+                                            @varient.CustomePrice
+                                        </td>
+                                        <td class="text-center">
+                                            @cgst
+                                        </td>
+                                        <td class="text-center">
+                                            @cgstAmount
+                                        </td>
+                                        <td class="text-center">
+                                            @sgst
+                                        </td>
+                                        <td class="text-center">
+                                            @sgstAmount
+                                        </td>
+                                        <td class="text-center">
+                                            @totalAmount
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 p-4">
+                        Other Terms and Conditions:
+                        <ol>
+                            <li>
+                                Tax: GST Extra as per applicable.
+                            </li>
+                            <li>
+                                Mode of payment: 70% Advance and Balance after completion of work.
+                            </li>
+                            <li>
+                                Freight charges extra as applicable.
+                            </li>
+                            <li>
+                                Delivery: as per schedule.
+                            </li>
+                            <li>
+                                Validity: The abouve rates are valid only up to 7 days.
+                            </li>
+                            <li>
+                                Cancellation: Once the order confirmed will not be canceled. If customer wants to cancel the order, the advance payment will be forfeited.
+                            </li>
+                            <li>
+                                The above rate will be applicable only when the quantity will remain same.
+                            </li>
+                        </ol>
+                        Hopping for your valueble order at an earlier. <br />
+                        Thanking You,<br /><br />
+                        For Shree Shyam Enterprises
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <input type="button" class="btn btn-info" value="Print" onclick="showPrintArea()" />
+    </div>
+    <div class="col-sm-6">
+
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+        function showPrintArea() {
+            //Get the HTML of div
+            var divElements = document.getElementById("PrintableArea").innerHTML;
+            //Get the HTML of whole page
+            var oldPage = document.body.innerHTML;
+
+            //Reset the page's HTML with div's HTML only
+            document.body.innerHTML =
+                `<html><head><title></title>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+                </head><body><div class="container">` +
+                divElements + "</div></body>";
+
+            //Print Page
+            window.print();
+
+            //Restore orignal HTML
+            document.body.innerHTML = oldPage;
+
+
+        }
+    </script>
+}

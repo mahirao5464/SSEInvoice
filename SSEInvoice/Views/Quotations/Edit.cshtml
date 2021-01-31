@@ -349,8 +349,8 @@
 
     var IsOnlyCGST = '@Html.Raw(Model.CustomVarient[0]?.IsCgstOnly)';
     $("#selectedProduct").select2();
-    var dataTable = $('.dataTable').DataTable();
-    var dataTablecgst = $(".dataTableForCgst").DataTable();
+    var dataTable = $('.dataTable').DataTable({ responsive: true });
+    var dataTablecgst = $(".dataTableForCgst").DataTable({ responsive: true });
     $('#CustomerId').change(function () {
         dataTable.clear();
         dataTablecgst.clear();
@@ -496,7 +496,7 @@ Pin Code : ${bAddress.pinCode},
                     "CustomPrice": CustomPrice,
                     "Cgst": CgstAmount,
                     "Sgst": SgstAmount,
-                    "IsOnlyCgst": true
+                    "IsOnlyCgst": false
                 });
                 dataTable.row.add([
                     ProductName,
