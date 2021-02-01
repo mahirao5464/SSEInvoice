@@ -16,7 +16,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
-            <th>
+            <th >
                 @Html.DisplayNameFor(model => model.BillingTo)
             </th>
             <th>
@@ -49,8 +49,8 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Customer.ContactPersonName)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BillingAddressString)
+            <td >
+                <div style="width:250px">@Html.DisplayFor(modelItem => item.BillingAddressString)</div> 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
