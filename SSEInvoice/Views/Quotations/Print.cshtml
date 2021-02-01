@@ -1,7 +1,19 @@
 ﻿@model SSEInvoice.Models.ViewModels.QuotViewModels
 
 @{
-    ViewData["Title"] = "Quotation : Q" + Model.Quotation.Id;
+    Func<int, string> getQuot = delegate (int x)
+    {
+        var y = x.ToString();
+        if (y.Length <5)
+        {
+            for (var i = y.Length; i <5; i++)
+            {
+                y = "0" + y;
+            }
+        }
+        return "Q"+y;
+    };
+    ViewData["Title"] = "Quotation : " + getQuot(Model.Quotation.Id);
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="row" id="PrintableArea">
@@ -21,7 +33,7 @@
                 <div class="col-sm-3 text-center">
                     <p>
                         <h3>Quotation</h3>
-                        Number: <strong><span>Q</span>@Model.Quotation.Id</strong>
+                        Number: <strong>@getQuot(Model.Quotation.Id)</strong>
                     </p>
                 </div>
             </div>
@@ -84,7 +96,7 @@
                             <strong>GST Number</strong>
                         </div>
                         <div class="col-sm-6">
-                            : @Html.Raw(Model.Quotation.Customer.GSTNumber);
+                            : @Html.Raw(Model.Quotation.Customer.GSTNumber)
                         </div>
                     </div>
                 </div>
@@ -153,7 +165,7 @@
                                 @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
                                 {
                                     var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var igst = varient.Varient.CGST + varient.Varient.SGST;
-                                    var igstAmount = varient.CustomePrice * igst / 100; var totalAmount = varient.CustomePrice + igstAmount;
+                                    var igstAmount = varient.CustomePrice * igst / 100; var totalAmount = varient.Count * (varient.CustomePrice + igstAmount);
                                     <tr>
                                         <td>
                                             @SrNo
@@ -186,10 +198,10 @@
                                         <strong>Total</strong>
                                     </td>
                                     <td class="text-center">
-                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst)
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * (el.Varient.CGST + el.Varient.SGST)/100)
                                     </td>
                                     <td class="text-center">
-                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.CustomePrice)
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.Count * el.CustomePrice)
                                     </td>
                                 </tr>
                             </tfoot>
@@ -197,64 +209,83 @@
                     }
                     else
                     {
-                        <table border="1" style="width:inherit">
-                            <thead class="text-center bg-secondary bg-light">
-                                <tr></tr>
-                                <tr>
-                                    <th rowspan="2" style="width:3%">Sr. No.</th>
-                                    <th rowspan="2" style="width:37%">Description</th>
-                                    <th rowspan="2" style="width:5%">Qty</th>
-                                    <th rowspan="2" style="width:10%">rate</th>
-                                    <th colspan="2">cgst</th>
-                                    <th colspan="2">sgst</th>
-                                    <th rowspan="2">Amount</th>
-                                </tr>
-                                <tr>
-                                    <th style="width:3%">%</th>
-                                    <th style="width:10%">amount</th>
-                                    <th style="width:3%">%</th>
-                                    <th style="width:10%">amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
-                                {
-                                    var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var cgst = varient.Varient.CGST; var sgst = varient.Varient.SGST;
-                                    var cgstAmount = varient.CustomePrice * cgst / 100; var sgstAmount = varient.CustomePrice * sgst / 100; var totalAmount = varient.CustomePrice + cgstAmount + sgstAmount;
+                <table border="1" style="width:inherit">
+                    <thead class="text-center bg-secondary bg-light">
+                        <tr></tr>
+                        <tr>
+                            <th rowspan="2" style="width:3%">Sr. No.</th>
+                            <th rowspan="2" style="width:37%">Description</th>
+                            <th rowspan="2" style="width:5%">Qty</th>
+                            <th rowspan="2" style="width:10%">Rate</th>
+                            <th colspan="2">CGST</th>
+                            <th colspan="2">SGST</th>
+                            <th rowspan="2">Amount</th>
+                        </tr>
+                        <tr>
+                            <th style="width:3%">%</th>
+                            <th style="width:10%">Amount</th>
+                            <th style="width:3%">%</th>
+                            <th style="width:10%">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
+                        {
+                            var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var cgst = varient.Varient.CGST; var sgst = varient.Varient.SGST;
+                            var cgstAmount = varient.CustomePrice * cgst / 100; var sgstAmount = varient.CustomePrice * sgst / 100; var totalAmount = varient.Count * (varient.CustomePrice + cgstAmount + sgstAmount);
 
-                                    <tr>
-                                        <td>
-                                            @SrNo
-                                        </td>
-                                        <td>
-                                            <strong>@varient.Varient?.Product.ProductName</strong> <br />
-                                            &nbsp;&nbsp;&nbsp;&nbsp;@varient.Varient?.VarientName
-                                        </td>
-                                        <td class="text-center">
-                                            @varient.Count
-                                        </td>
-                                        <td class="text-center">
-                                            @varient.CustomePrice
-                                        </td>
-                                        <td class="text-center">
-                                            @cgst
-                                        </td>
-                                        <td class="text-center">
-                                            @cgstAmount
-                                        </td>
-                                        <td class="text-center">
-                                            @sgst
-                                        </td>
-                                        <td class="text-center">
-                                            @sgstAmount
-                                        </td>
-                                        <td class="text-center">
-                                            @totalAmount
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                            <tr>
+                                <td>
+                                    @SrNo
+                                </td>
+                                <td>
+                                    <strong>@varient.Varient?.Product.ProductName</strong> <br />
+                                    &nbsp;&nbsp;&nbsp;&nbsp;@varient.Varient?.VarientName
+                                </td>
+                                <td class="text-center">
+                                    @varient.Count
+                                </td>
+                                <td class="text-center">
+                                    @varient.CustomePrice
+                                </td>
+                                <td class="text-center">
+                                    @cgst
+                                </td>
+                                <td class="text-center">
+                                    @cgstAmount
+                                </td>
+                                <td class="text-center">
+                                    @sgst
+                                </td>
+                                <td class="text-center">
+                                    @sgstAmount
+                                </td>
+                                <td class="text-center">
+                                    @totalAmount
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-right pr-3">
+                                <strong>Total</strong>
+                            </td>
+                            <td class="text-center">
+                                @Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * (el.Varient.CGST ) / 100)
+                            </td>
+                            <td>
+
+                            </td>
+                            <td class="text-center">
+                                @Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * (el.Varient.SGST) / 100)
+                            </td>
+                            <td class="text-center">
+                                @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.Count * el.CustomePrice)
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
                     }
 
                 </div>
