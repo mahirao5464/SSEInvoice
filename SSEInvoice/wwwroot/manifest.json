@@ -1,0 +1,29 @@
+{
+  "name": "PWADemo",
+  "short_name": "PWA",
+  "description": "Demo PWA application in ASP.NET Core.",
+  "icons": [
+    {
+      "src": "/images/shyaml144.jpg",
+      "sizes": "144x144",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/images/shyaml144.jpg",
+      "type": "image/jpg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/shyaml144.jpg",
+      "sizes": "168x168",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/images/shyaml144.jpg",
+      "type": "image/jpg",
+      "sizes": "512x512"
+    }
+  ],
+  "display": "standalone",
+  "start_url": "/"
+}  
