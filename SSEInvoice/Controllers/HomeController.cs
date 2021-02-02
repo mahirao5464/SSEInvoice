@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SSEInvoice.Controllers
 {
-    [Authorize]
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,6 +21,12 @@ namespace SSEInvoice.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpGet("Invoice")]
+        public IActionResult Invoice()
         {
             return View();
         }
