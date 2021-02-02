@@ -58,6 +58,28 @@
     <script>
         $(window).on('load', function () {
 
+            //let defferedPrompt= window.addEventListener('beforeinstallprompt', (e) => {
+            //    e.preventDefault();
+            //    defferedPrompt = e;
+            //});
+            //window.addEventListener('beforeinstallprompt', (e) => {
+            //    e.preventDefault();
+            //    defferedPrompt = e;
+            //    btnAdd.style.display = 'block';
+            //});
+            //var btnAdd = document.getElementById('btnadd');
+            //btnAdd.addEventListener('click', (e) => {
+            //    defferedPrompt.prompt();
+            //    defferedPrompt.userChoice.then((choiceResult) => {
+            //        if (choiceResult.outcome === 'accepted') {
+            //            console.log('User accepted the A2HS prompt');
+            //        }
+            //        defferedPrompt = null;
+            //    })
+            //});
+            //window.addEventListener('appinstalled', (evn) => {
+            //    app.logEvent('a2hs','installed');
+            //});
             var listTable = $(".listTable").DataTable(
                 {
                     responsive: true
