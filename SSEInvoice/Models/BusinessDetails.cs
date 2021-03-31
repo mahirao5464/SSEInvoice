@@ -21,6 +21,7 @@ namespace SSEInvoice.Models
         public DateTime UpdatedOn { get; set; } = DateTime.Now;
         
 
+
     }
     public class BankDetail 
     {
@@ -37,6 +38,10 @@ namespace SSEInvoice.Models
         [Required]
         public string AccountNumber { get; set; }
 
+        public override string ToString()
+        {
+            return this.BankName+", "+this.BranchName+", "+this.AccountNumber+", "+this.IFSC;
+        }
 
     }
 }

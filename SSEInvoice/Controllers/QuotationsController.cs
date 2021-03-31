@@ -153,6 +153,29 @@ namespace SSEInvoice.Controllers
             
             return View(QuoteViewModel);
         }
+        [Route("~/Invoice/Print/{id}")]
+        public async Task<IActionResult> PrintInvoice(int? id)
+        {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var quotation = await _context.Quotations.Include(el => el.Customer).ThenInclude(el => el.PermanentAddress).Include(el => el.CustomVarient).ThenInclude(el => el.Varient).ThenInclude(el => el.Product).FirstOrDefaultAsync(el => el.Id == id);
+            if (quotation == null)
+            {
+                return NotFound();
+            }
+            var QuoteViewModel = new QuotViewModels()
+            {
+                Quotation = quotation,
+                BusinessDetails = _context.BusinessDetails.Include(el => el.Address).Include(el => el.BankDetail),
+                PrintedOn = DateTime.Now
+            };
+
+
+            return View("PrintInvoice", QuoteViewModel);
+        }
 
         public ActionResult LoadCustomVarient(int? id)
         {
