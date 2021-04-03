@@ -103,7 +103,7 @@
                             <strong>GST Number</strong>
                         </div>
                         <div class="col-sm-6">
-                            : @Html.Raw(Model.Quotation.Customer.GSTNumber)
+                            : @Html.Raw(Model.Quotation?.Customer?.GSTNumber)
                         </div>
                     </div>
                 </div>
@@ -152,7 +152,7 @@
                 <div class="col-sm-12">
                     @if (Model.Quotation.CustomVarient.FirstOrDefault().IsCgstOnly)
                     {
-                        totalSgst = totalCgst = 0.00.ToString("C2"); totalIgst = Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * (el.Varient.CGST + el.Varient.SGST) / 100).ToString("C2");
+                        totalSgst = totalCgst = 0.00.ToString("C2"); totalIgst = Model.Quotation.CustomVarient?.Sum(el =>el.Count * el.CustomePrice * (el.Varient.CGST + el.Varient.SGST) / 100).ToString("C2");
                         <table border="1" style="width:inherit">
                             <thead class="text-center bg-secondary bg-light">
                                 <tr></tr>
@@ -174,7 +174,7 @@
                                 @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
                                 {
                                     var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var igst = varient.Varient.CGST + varient.Varient.SGST;
-                                    var igstAmount = varient.CustomePrice * igst / 100; var totalAmount = varient.Count * (varient.CustomePrice + igstAmount);
+                                    var igstAmount = varient.Count * varient.CustomePrice * igst / 100; var totalAmount = varient.Count * varient.CustomePrice + igstAmount;
                                     <tr>
                                         <td>
                                             @SrNo
@@ -190,22 +190,24 @@
                                             @varient.Count
                                         </td>
                                         <td class="text-center">
-                                            @varient.CustomePrice
+                                            
+                                            @varient.CustomePrice.ToString("C2")
                                         </td>
                                         <td class="text-center">
                                             @igst
                                         </td>
                                         <td class="text-center">
-                                            @igstAmount
+                                            @igstAmount.ToString("C2")
                                         </td>
                                         <td class="text-center">
-                                            @totalAmount
+                                            @totalAmount.ToString("C2")
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <td></td>
                                     <td colspan="5" class="text-right pr-3">
                                         <strong>Total</strong>
                                     </td>
@@ -213,7 +215,7 @@
                                         @totalIgst
                                     </td>
                                     <td class="text-center">
-                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.Count * el.CustomePrice)
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.Count * el.CustomePrice).ToString("C2")
                                     </td>
                                 </tr>
                             </tfoot>
@@ -352,7 +354,7 @@
                                     <strong>Amount</strong>
                                 </div>
                             </div>
-                            <div class="row h-40">
+                            <div class="row" style="height:40px">
                                 <div class="col-sm-8 border">
                                     Total Invoice Value
                                 </div>
@@ -360,7 +362,7 @@
                                     : @Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * el.Count).ToString("C2")
                                 </div>
                             </div>
-                            <div class="row h-40">
+                            <div class="row" style="height:40px">
                                 <div class="col-sm-8 border">
                                     Total CGST
                                 </div>
@@ -368,7 +370,7 @@
                                     : @totalCgst
                                 </div>
                             </div>
-                            <div class="row h-40">
+                            <div class="row " style="height:40px">
                                 <div class="col-sm-8 border">
                                     Total SGST
                                 </div>
@@ -376,7 +378,7 @@
                                     : @totalSgst
                                 </div>
                             </div>
-                            <div class="row h-40">
+                            <div class="row " style="height:40px">
                                 <div class="col-sm-8 border">
                                     Total IGST
                                 </div>
@@ -385,7 +387,7 @@
                                 </div>
 
                             </div>
-                            <div class="row h-40">
+                            <div class="row " style="height:40px">
                                 <div class="col-sm-8 border">
                                     Shipping Charges
                                 </div>
@@ -394,7 +396,7 @@
                                 </div>
 
                             </div>
-                            <div class="row h-40">
+                            <div class="row " style="height:35px">
                                 <div class="col-sm-8 border">
                                     Grand Total
                                 </div>
@@ -410,7 +412,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <strong>Our Bank Detail-></strong> @Model.BusinessDetails.FirstOrDefault().BankDetail.ToString();
+                            <strong>Our Bank Detail-> @Model.BusinessDetails.FirstOrDefault().BankDetail.ToString();</strong>
                         </div>
                     </div>
                 </div>

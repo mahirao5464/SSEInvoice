@@ -40,7 +40,7 @@ namespace SSEInvoice.Models
 
         public override string ToString()
         {
-            return this.BankName+", "+this.BranchName+", "+this.AccountNumber+", "+this.IFSC;
+            return "Name: "+this.Name+", "+this.BankName+", "+this.BranchName+", Account Number: "+this.AccountNumber+", IFSC: "+this.IFSC;
         }
 
     }

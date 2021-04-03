@@ -53,6 +53,12 @@ namespace SSEInvoice
                 //app.UseHsts();
             }
             app.UseHttpsRedirection();
+            var supportedCultures = new[] { "en-IN" };
+            var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+
+            app.UseRequestLocalization(localizationOptions);
             app.UseStaticFiles();
 
             app.UseRouting();

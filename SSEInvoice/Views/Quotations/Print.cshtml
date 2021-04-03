@@ -96,7 +96,7 @@
                             <strong>GST Number</strong>
                         </div>
                         <div class="col-sm-6">
-                            : @Html.Raw(Model.Quotation.Customer.GSTNumber)
+                            : @Html.Raw(Model.Quotation.Customer?.GSTNumber)
                         </div>
                     </div>
                 </div>
@@ -165,7 +165,7 @@
                                 @for (byte i = 0; i < Model.Quotation.CustomVarient.Count(); i++)
                                 {
                                     var varient = Model.Quotation.CustomVarient[i]; var SrNo = i + 1; var igst = varient.Varient.CGST + varient.Varient.SGST;
-                                    var igstAmount = varient.CustomePrice * igst / 100; var totalAmount = varient.Count * (varient.CustomePrice + igstAmount);
+                                    var igstAmount = varient.Count * varient.CustomePrice * igst / 100; var totalAmount = varient.Count * varient.CustomePrice + igstAmount;
                                     <tr>
                                         <td>
                                             @SrNo
@@ -198,10 +198,10 @@
                                         <strong>Total</strong>
                                     </td>
                                     <td class="text-center">
-                                        @Model.Quotation.CustomVarient?.Sum(el => el.CustomePrice * (el.Varient.CGST + el.Varient.SGST)/100)
+                                        @Model.Quotation.CustomVarient?.Sum(el =>el.Count * el.CustomePrice * (el.Varient.CGST + el.Varient.SGST)/100)
                                     </td>
                                     <td class="text-center">
-                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + el.Count * el.CustomePrice)
+                                        @Model.Quotation.CustomVarient?.Sum(el => el.Cgst + el.Sgst + (el.Count * el.CustomePrice))
                                     </td>
                                 </tr>
                             </tfoot>
